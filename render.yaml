@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: clyvo-vet
+    env: docker
+    plan: free
+    region: oregon
+    branch: main
+    healthCheckPath: /login
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod

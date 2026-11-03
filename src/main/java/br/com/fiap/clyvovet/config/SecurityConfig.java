@@ -3,6 +3,7 @@ package br.com.fiap.clyvovet.config;
 import br.com.fiap.clyvovet.service.UsuarioDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -41,14 +42,12 @@ public class SecurityConfig {
     }
 
     @Bean
+    @Order(2)
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authenticationProvider(authenticationProvider())
             .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/api/**", "/h2-console/**")
-            )
-            .headers(headers -> headers
-                .frameOptions(frameOptions -> frameOptions.sameOrigin())
+                .ignoringRequestMatchers("/api/**")
             )
             .authorizeHttpRequests(auth -> auth
                 // Recursos estáticos e utilitários
@@ -57,11 +56,11 @@ public class SecurityConfig {
                 // Rotas da API REST (para compatibilidade total com o aplicativo Mobile)
                 .requestMatchers("/api/**").permitAll()
                 
-                // Documentação OpenAPI e Console H2
-                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/api-docs/**", "/h2-console/**").permitAll()
-                
+                // Documentação OpenAPI
+                .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/api-docs/**").permitAll()
+
                 // Autenticação e páginas públicas
-                .requestMatchers("/login", "/403", "/erro").permitAll()
+                .requestMatchers("/login", "/403", "/erro", "/error").permitAll()
                 
                 // Atendimento clínico e evolução de prontuário médico (Exclusivo para Veterinários)
                 .requestMatchers("/atendimentos/**", "/fluxo/consulta/**").hasRole("VET")
