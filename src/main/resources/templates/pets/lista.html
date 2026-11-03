@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Pets Cadastrados')}"></head>
+<body>
+
+<header th:replace="~{fragments/layout :: navbar}"></header>
+
+<main class="main-content">
+    <div th:replace="~{fragments/layout :: alerts}"></div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h1 style="font-size: 1.75rem; font-weight: 800; color: #ffffff;">
+                🐾 Fichas Clínicas e Animais Monitorados
+            </h1>
+            <p style="color: var(--text-muted); margin-top: 0.25rem;">
+                Acesso aos dados biométricos, tutores e histórico médico completo de cada paciente.
+            </p>
+        </div>
+
+        <a th:href="@{/agendamentos/novo}" class="btn btn-primary">
+            <span>⚡</span> Agendar para um Pet
+        </a>
+    </div>
+
+    <div class="grid-3">
+        <div th:each="pet : ${pets}" class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+                    <div>
+                        <h3 style="font-size: 1.3rem; color: #ffffff; font-weight: 700;" th:text="${pet.nome}">Thor</h3>
+                        <span style="font-size: 0.85rem; color: var(--primary);" th:text="${pet.especie} + ' • ' + ${pet.raca}">Canino • Golden</span>
+                    </div>
+                    <span style="background: rgba(35, 196, 131, 0.15); color: var(--primary); padding: 0.25rem 0.6rem; border-radius: 6px; font-size: 0.85rem; font-weight: 700;" 
+                          th:text="${pet.peso != null ? pet.peso + ' kg' : '-'}">32.5 kg</span>
+                </div>
+
+                <div style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.25rem;">
+                    <div><strong>Tutor:</strong> <span th:text="${pet.tutor.nome}">Leandro Silva</span></div>
+                    <div><strong>Contato:</strong> <span th:text="${pet.tutor.telefone}">(11) 91234-5678</span></div>
+                    <div th:if="${pet.dataNascimento}">
+                        <strong>Nascimento:</strong> <span th:text="${#temporals.format(pet.dataNascimento, 'dd/MM/yyyy')}">15/06/2021</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid var(--border-color); padding-top: 1rem; display: flex; gap: 0.5rem;">
+                <a th:href="@{'/pets/' + ${pet.id} + '/prontuario'}" class="btn btn-sm btn-secondary" style="flex: 1; text-align: center; justify-content: center;">
+                    📑 Prontuário Completo
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

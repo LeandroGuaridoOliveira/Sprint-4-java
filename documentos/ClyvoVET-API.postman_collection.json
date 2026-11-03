@@ -1,0 +1,372 @@
+{
+  "info": {
+    "name": "Clyvo VET API",
+    "description": "Coleção de testes para a API RESTful do Challenge FIAP 2026 - Clyvo VET",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080/api" }
+  ],
+  "item": [
+    {
+      "name": "Clínicas",
+      "item": [
+        {
+          "name": "Listar clínicas",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/clinicas?page=0&size=10&sort=nome,asc" } }
+        },
+        {
+          "name": "Buscar clínica por nome",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/clinicas?nome=PetLife" } }
+        },
+        {
+          "name": "Buscar clínica por ID",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/clinicas/1" } }
+        },
+        {
+          "name": "Criar clínica",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/clinicas" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Nova Clínica Teste\",\n  \"cnpj\": \"99.999.999/0001-99\",\n  \"endereco\": \"Rua Teste, 999 - SP\",\n  \"telefone\": \"(11)3333-9999\",\n  \"email\": \"teste@clinica.com.br\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Atualizar clínica",
+          "request": {
+            "method": "PUT",
+            "url": { "raw": "{{baseUrl}}/clinicas/1" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"PetLife Centro Atualizada\",\n  \"cnpj\": \"11.111.111/0001-01\",\n  \"endereco\": \"Rua Augusta, 500 - SP\",\n  \"telefone\": \"(11)3333-1111\",\n  \"email\": \"novo@petlife.com.br\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Deletar clínica",
+          "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/clinicas/4" } }
+        }
+      ]
+    },
+    {
+      "name": "Veterinários",
+      "item": [
+        {
+          "name": "Listar veterinários",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/veterinarios?page=0&size=10&sort=nome,asc" } }
+        },
+        {
+          "name": "Buscar por especialidade",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/veterinarios?especialidade=Cardiologia" } }
+        },
+        {
+          "name": "Buscar por clínica",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/veterinarios?clinicaId=1" } }
+        },
+        {
+          "name": "Buscar veterinário por ID",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/veterinarios/1" } }
+        },
+        {
+          "name": "Criar veterinário",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/veterinarios" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Dr. Teste Novo\",\n  \"crmv\": \"SP-99999\",\n  \"especialidade\": \"Neurologia\",\n  \"telefone\": \"(11)99999-9999\",\n  \"clinicaId\": 1\n}"
+            }
+          }
+        },
+        {
+          "name": "Atualizar veterinário",
+          "request": {
+            "method": "PUT",
+            "url": { "raw": "{{baseUrl}}/veterinarios/1" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Dra. Ana Costa Atualizada\",\n  \"crmv\": \"SP-11111\",\n  \"especialidade\": \"Clínica Geral\",\n  \"telefone\": \"(11)99999-1111\",\n  \"clinicaId\": 1\n}"
+            }
+          }
+        },
+        {
+          "name": "Deletar veterinário",
+          "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/veterinarios/6" } }
+        }
+      ]
+    },
+    {
+      "name": "Tutores",
+      "item": [
+        {
+          "name": "Listar tutores",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/tutores?page=0&size=10&sort=nome,asc" } }
+        },
+        {
+          "name": "Buscar tutor por nome",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/tutores?nome=Maria" } }
+        },
+        {
+          "name": "Buscar tutor por ID",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/tutores/1" } }
+        },
+        {
+          "name": "Criar tutor",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/tutores" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Roberto Novo\",\n  \"cpf\": \"666.666.666-66\",\n  \"email\": \"roberto@email.com\",\n  \"telefone\": \"(11)98888-6666\",\n  \"endereco\": \"Rua F, 600 - SP\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Atualizar tutor",
+          "request": {
+            "method": "PUT",
+            "url": { "raw": "{{baseUrl}}/tutores/1" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Maria Silva Santos\",\n  \"cpf\": \"111.111.111-11\",\n  \"email\": \"maria.nova@email.com\",\n  \"telefone\": \"(11)98888-1111\",\n  \"endereco\": \"Rua A, 100 - SP\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Deletar tutor",
+          "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/tutores/6" } }
+        }
+      ]
+    },
+    {
+      "name": "Pets",
+      "item": [
+        {
+          "name": "Listar pets",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/pets?page=0&size=10&sort=nome,asc" } }
+        },
+        {
+          "name": "Buscar pets por espécie",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/pets?especie=Canino" } }
+        },
+        {
+          "name": "Buscar pets por tutor",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/pets?tutorId=1" } }
+        },
+        {
+          "name": "Buscar pet por ID",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/pets/1" } }
+        },
+        {
+          "name": "Criar pet",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/pets" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Buddy\",\n  \"especie\": \"Canino\",\n  \"raca\": \"Beagle\",\n  \"dataNascimento\": \"2023-06-10\",\n  \"peso\": 12.5,\n  \"tutorId\": 2\n}"
+            }
+          }
+        },
+        {
+          "name": "Atualizar pet",
+          "request": {
+            "method": "PUT",
+            "url": { "raw": "{{baseUrl}}/pets/1" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Rex\",\n  \"especie\": \"Canino\",\n  \"raca\": \"Labrador\",\n  \"dataNascimento\": \"2021-03-15\",\n  \"peso\": 30.0,\n  \"tutorId\": 1\n}"
+            }
+          }
+        },
+        {
+          "name": "Deletar pet",
+          "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/pets/9" } }
+        }
+      ]
+    },
+    {
+      "name": "Agendamentos",
+      "item": [
+        {
+          "name": "Listar agendamentos",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/agendamentos?page=0&size=10&sort=dataAgendamento,asc" } }
+        },
+        {
+          "name": "Buscar por status",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/agendamentos?status=Agendado" } }
+        },
+        {
+          "name": "Buscar por pet",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/agendamentos?petId=1" } }
+        },
+        {
+          "name": "Buscar agendamento por ID",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/agendamentos/1" } }
+        },
+        {
+          "name": "Criar agendamento",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/agendamentos" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dataAgendamento\": \"2026-07-15T10:00:00\",\n  \"tipo\": \"Consulta\",\n  \"status\": \"Agendado\",\n  \"observacao\": \"Primeira consulta\",\n  \"petId\": 2,\n  \"veterinarioId\": 3\n}"
+            }
+          }
+        },
+        {
+          "name": "Atualizar agendamento",
+          "request": {
+            "method": "PUT",
+            "url": { "raw": "{{baseUrl}}/agendamentos/1" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dataAgendamento\": \"2026-06-10T09:00:00\",\n  \"tipo\": \"Consulta\",\n  \"status\": \"Confirmado\",\n  \"observacao\": \"Check-up semestral confirmado\",\n  \"petId\": 1,\n  \"veterinarioId\": 1\n}"
+            }
+          }
+        },
+        {
+          "name": "Deletar agendamento",
+          "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/agendamentos/6" } }
+        }
+      ]
+    },
+    {
+      "name": "Eventos de Saúde",
+      "item": [
+        {
+          "name": "Listar eventos de saúde",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/eventos-saude?page=0&size=10&sort=dataEvento,desc" } }
+        },
+        {
+          "name": "Buscar por tipo",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/eventos-saude?tipoEvento=Vacina" } }
+        },
+        {
+          "name": "Buscar histórico do pet",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/eventos-saude?petId=1" } }
+        },
+        {
+          "name": "Buscar evento por ID",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/eventos-saude/1" } }
+        },
+        {
+          "name": "Registrar evento de saúde",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/eventos-saude" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipoEvento\": \"Exame\",\n  \"dataEvento\": \"2026-05-20\",\n  \"descricao\": \"Exame de sangue completo\",\n  \"resultado\": \"Valores normais\",\n  \"petId\": 3,\n  \"veterinarioId\": 4\n}"
+            }
+          }
+        },
+        {
+          "name": "Atualizar evento",
+          "request": {
+            "method": "PUT",
+            "url": { "raw": "{{baseUrl}}/eventos-saude/1" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipoEvento\": \"Vacina\",\n  \"dataEvento\": \"2025-06-15\",\n  \"descricao\": \"Vacina V10 aplicada - lote ABC123\",\n  \"resultado\": \"Sem reação adversa\",\n  \"petId\": 1,\n  \"veterinarioId\": 1\n}"
+            }
+          }
+        },
+        {
+          "name": "Deletar evento",
+          "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/eventos-saude/7" } }
+        }
+      ]
+    },
+    {
+      "name": "Protocolos",
+      "item": [
+        {
+          "name": "Listar protocolos",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/protocolos?page=0&size=10&sort=especie,asc" } }
+        },
+        {
+          "name": "Buscar por espécie",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/protocolos?especie=Canino" } }
+        },
+        {
+          "name": "Buscar por tipo de protocolo",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/protocolos?tipoProtocolo=Vacina" } }
+        },
+        {
+          "name": "Buscar protocolos aplicáveis a um pet",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/protocolos/pet?especie=Canino&raca=Bulldog" } }
+        },
+        {
+          "name": "Buscar protocolo por ID",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/protocolos/1" } }
+        },
+        {
+          "name": "Criar protocolo",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/protocolos" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"especie\": \"Felino\",\n  \"raca\": \"Persa\",\n  \"tipoProtocolo\": \"Exame\",\n  \"descricao\": \"Exame renal preventivo - raça predisposta\",\n  \"intervaloDias\": 180,\n  \"faixaEtaria\": \"Idoso\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Atualizar protocolo",
+          "request": {
+            "method": "PUT",
+            "url": { "raw": "{{baseUrl}}/protocolos/1" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"especie\": \"Canino\",\n  \"tipoProtocolo\": \"Vacina\",\n  \"descricao\": \"Vacina V10 - reforço anual obrigatório (atualizado)\",\n  \"intervaloDias\": 365,\n  \"faixaEtaria\": \"Adulto\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Deletar protocolo",
+          "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/protocolos/7" } }
+        }
+      ]
+    },
+    {
+      "name": "Validação de Erros",
+      "item": [
+        {
+          "name": "Criar pet sem campos obrigatórios (Bean Validation)",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/pets" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"peso\": 5.0\n}"
+            }
+          }
+        },
+        {
+          "name": "Buscar recurso inexistente (404)",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/clinicas/999" } }
+        }
+      ]
+    }
+  ]
+}

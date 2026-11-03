@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Painel Principal')}"></head>
+<body>
+
+<header th:replace="~{fragments/layout :: navbar}"></header>
+
+<main class="main-content">
+    <div th:replace="~{fragments/layout :: alerts}"></div>
+
+    <!-- Header de Boas-Vindas -->
+    <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h1 style="font-size: 1.85rem; font-weight: 800; color: #ffffff; letter-spacing: -0.5px;">
+                Olá, <span th:text="${usuario != null ? usuario.nome : 'Usuário'}">Dra. Camila</span> 👋
+            </h1>
+            <p style="color: var(--text-muted); margin-top: 0.25rem;">
+                Ecossistema Clyvo VET — Gestão de saúde preventiva e rotina clínica integrada.
+            </p>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem;">
+            <a th:href="@{/agendamentos/novo}" class="btn btn-primary">
+                <span>⚡</span> Novo Agendamento
+            </a>
+            <a sec:authorize="hasRole('VET')" th:href="@{/atendimentos}" class="btn btn-secondary">
+                <span>🩺</span> Fila de Consultas
+            </a>
+        </div>
+    </div>
+
+    <!-- Cards de Métricas do Sistema -->
+    <div class="grid-3" style="margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 0;">
+            <div style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Pets Monitorados</div>
+            <div style="font-size: 2.2rem; font-weight: 800; color: var(--primary); margin: 0.5rem 0;" th:text="${totalPets}">8</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Cães e gatos sob acompanhamento</div>
+        </div>
+
+        <div class="card" style="margin-bottom: 0;">
+            <div style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Total de Agendamentos</div>
+            <div style="font-size: 2.2rem; font-weight: 800; color: #60a5fa; margin: 0.5rem 0;" th:text="${totalAgendamentos}">12</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Consultas, vacinas e exames</div>
+        </div>
+
+        <div class="card" style="margin-bottom: 0;">
+            <div style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Prontuários & Histórico</div>
+            <div style="font-size: 2.2rem; font-weight: 800; color: #c084fc; margin: 0.5rem 0;" th:text="${totalConsultasRealizadas}">6</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Eventos clínicos concluídos</div>
+        </div>
+    </div>
+
+    <!-- VISÃO DO VETERINÁRIO (ROLE_VET) -->
+    <div sec:authorize="hasRole('VET')">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <span>🩺</span> Fila de Atendimentos Clínicos Prontos
+                </h2>
+                <a th:href="@{/atendimentos}" class="btn btn-sm btn-secondary">Ver Fila Completa →</a>
+            </div>
+
+            <div th:if="${#lists.isEmpty(atendimentosPendentes)}" style="padding: 1.5rem; text-align: center; color: var(--text-muted);">
+                Nenhum atendimento aguardando no momento.
+            </div>
+
+            <div class="table-responsive" th:unless="${#lists.isEmpty(atendimentosPendentes)}">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Data/Hora</th>
+                            <th>Pet</th>
+                            <th>Espécie/Raça</th>
+                            <th>Tipo</th>
+                            <th>Status</th>
+                            <th>Ações Clínicas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="agend : ${atendimentosPendentes}">
+                            <td style="font-weight: 600;" th:text="${#temporals.format(agend.dataAgendamento, 'dd/MM/yyyy HH:mm')}">15/09/2026 10:00</td>
+                            <td>
+                                <strong th:text="${agend.pet.nome}">Thor</strong>
+                                <span style="font-size: 0.8rem; color: var(--text-muted); display: block;" th:text="'Tutor: ' + ${agend.pet.tutor.nome}">Tutor: Leandro</span>
+                            </td>
+                            <td th:text="${agend.pet.especie} + ' - ' + ${agend.pet.raca}">Canino - Golden</td>
+                            <td th:text="${agend.tipo}">Consulta</td>
+                            <td>
+                                <span th:class="'badge badge-' + ${#strings.toLowerCase(agend.status)}" th:text="${agend.status}">AGENDADO</span>
+                            </td>
+                            <td>
+                                <a th:href="@{'/atendimentos/' + ${agend.id} + '/iniciar'}" class="btn btn-sm btn-primary">
+                                    ▶ Iniciar Consulta
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- VISÃO DO TUTOR (ROLE_TUTOR) -->
+    <div sec:authorize="hasRole('TUTOR')">
+        <div class="grid-2">
+            <!-- Meus Pets -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><span>🐕</span> Meus Animais</h2>
+                    <a th:href="@{/pets}" class="btn btn-sm btn-secondary">Ver Todos</a>
+                </div>
+
+                <div th:if="${#lists.isEmpty(meusPets)}" style="padding: 1rem; color: var(--text-muted); text-align: center;">
+                    Nenhum pet cadastrado para o seu perfil.
+                </div>
+
+                <div th:unless="${#lists.isEmpty(meusPets)}" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <div th:each="pet : ${meusPets}" style="background-color: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.85rem 1rem; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong style="color: #fff; font-size: 1.05rem;" th:text="${pet.nome}">Rex</strong>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);" th:text="${pet.especie} + ' • ' + ${pet.raca} + ' • ' + ${pet.peso} + ' kg'">Canino • Labrador • 28.5 kg</div>
+                        </div>
+                        <a th:href="@{'/pets/' + ${pet.id} + '/prontuario'}" class="btn btn-sm btn-secondary">Prontuário 📑</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Meus Agendamentos -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><span>📅</span> Meus Agendamentos</h2>
+                    <a th:href="@{/agendamentos/novo}" class="btn btn-sm btn-primary">+ Agendar</a>
+                </div>
+
+                <div th:if="${#lists.isEmpty(agendamentos)}" style="padding: 1rem; color: var(--text-muted); text-align: center;">
+                    Você ainda não possui agendamentos marcados.
+                </div>
+
+                <div th:unless="${#lists.isEmpty(agendamentos)}" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <div th:each="ag : ${agendamentos}" style="background-color: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.85rem 1rem; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 600; color: #fff;" th:text="${#temporals.format(ag.dataAgendamento, 'dd/MM/yyyy HH:mm')}">15/09/2026 10:00</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);" th:text="${ag.pet.nome} + ' • ' + ${ag.tipo} + ' com ' + ${ag.veterinario.nome}">Thor • Consulta</div>
+                        </div>
+                        <span th:class="'badge badge-' + ${#strings.toLowerCase(ag.status)}" th:text="${ag.status}">CONFIRMADO</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Visão Geral dos Módulos da Plataforma -->
+    <div class="card" style="background: linear-gradient(135deg, rgba(35, 196, 131, 0.06), var(--bg-card));">
+        <div class="card-header">
+            <h3 class="card-title" style="color: var(--primary-light);">
+                <span>🌿</span> Ecossistema Clínico & Cuidados Preventivos
+            </h3>
+        </div>
+        <div class="grid-4" style="font-size: 0.85rem; margin-top: 0.5rem;">
+            <div>
+                <strong style="color: #fff;">Triagem Inteligente</strong>
+                <p style="color: var(--text-muted); margin-top: 0.25rem;">Classificação prévia e validação de disponibilidade da agenda médica em tempo real.</p>
+            </div>
+            <div>
+                <strong style="color: #fff;">Prontuário Unificado</strong>
+                <p style="color: var(--text-muted); margin-top: 0.25rem;">Histórico completo de atendimentos, evolução do peso corporal e diagnósticos.</p>
+            </div>
+            <div>
+                <strong style="color: #fff;">Protocolos Preventivos</strong>
+                <p style="color: var(--text-muted); margin-top: 0.25rem;">Controle proativo de vacinas polivalentes, vermifugação e check-ups periódicos.</p>
+            </div>
+            <div>
+                <strong style="color: #fff;">Acesso Integrado</strong>
+                <p style="color: var(--text-muted); margin-top: 0.25rem;">Portal exclusivo para tutores e ferramentas avançadas para a equipe médica veterinária.</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

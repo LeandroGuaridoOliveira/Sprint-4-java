@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar | Clyvo VET</title>
+    <style>
+        :root {
+            --bg-main: #081612;
+            --bg-card: #0f2720;
+            --bg-input: #0a1b16;
+            --primary: #23c483;
+            --primary-light: #44db9d;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border-color: #1e4539;
+            --danger: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at top, #14352b 0%, #081612 70%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 440px;
+        }
+
+        .login-brand {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-brand h1 {
+            font-size: 2rem;
+            color: #ffffff;
+            margin-bottom: 0.35rem;
+        }
+
+        .login-brand p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .login-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(35, 196, 131, 0.25);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 0.85rem;
+            background-color: var(--primary);
+            color: #061510;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 0.5rem;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-light);
+        }
+
+        .alert {
+            padding: 0.85rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.25rem;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .alert-danger {
+            background-color: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fecaca;
+        }
+
+        .alert-success {
+            background-color: rgba(35, 196, 131, 0.15);
+            border: 1px solid rgba(35, 196, 131, 0.4);
+            color: #a7f3d0;
+        }
+
+        /* Demo credentials helper */
+        .demo-box {
+            margin-top: 1.75rem;
+            padding-top: 1.25rem;
+            border-top: 1px dashed var(--border-color);
+        }
+
+        .demo-box h4 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            text-align: center;
+        }
+
+        .demo-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .demo-btn {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        .demo-btn:hover {
+            background-color: rgba(35, 196, 131, 0.15);
+            border-color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <div class="login-brand">
+        <h1>🐾 Clyvo VET</h1>
+        <p>Acesse o Portal Clínico e Preventivo</p>
+    </div>
+
+    <div class="login-card">
+        <div th:if="${erro}" class="alert alert-danger" th:text="${erro}"></div>
+        <div th:if="${sucesso}" class="alert alert-success" th:text="${sucesso}"></div>
+
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label class="form-label" for="username">E-mail de Acesso</label>
+                <input type="email" id="username" name="username" class="form-control" 
+                       placeholder="exemplo@clyvo.com" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="password">Senha</label>
+                <input type="password" id="password" name="password" class="form-control" 
+                       placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn-submit">Entrar no Sistema</button>
+        </form>
+
+        <div class="demo-box">
+            <h4>Acesso Rápido</h4>
+            <div class="demo-buttons">
+                <button type="button" class="demo-btn" onclick="preencher('veterinario@clyvo.com', 'admin123')">
+                    <span>🩺 Dra. Camila Rocha (Veterinária)</span>
+                    <span style="color: var(--primary);">Entrar →</span>
+                </button>
+                <button type="button" class="demo-btn" onclick="preencher('tutor@clyvo.com', 'tutor123')">
+                    <span>🐕 Leandro Silva (Tutor)</span>
+                    <span style="color: #60a5fa;">Entrar →</span>
+                </button>
+                <button type="button" class="demo-btn" onclick="preencher('admin@clyvo.com', 'admin123')">
+                    <span>🛡️ Administrador do Sistema</span>
+                    <span style="color: #fbbf24;">Entrar →</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function preencher(email, senha) {
+        document.getElementById('username').value = email;
+        document.getElementById('password').value = senha;
+    }
+</script>
+
+</body>
+</html>

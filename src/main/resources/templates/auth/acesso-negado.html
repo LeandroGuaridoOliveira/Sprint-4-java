@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Acesso Negado (403)')}"></head>
+<body>
+
+<header th:replace="~{fragments/layout :: navbar}"></header>
+
+<main class="main-content" style="display: flex; align-items: center; justify-content: center; min-height: 70vh;">
+    <div class="card" style="max-width: 540px; text-align: center; padding: 2.5rem 2rem;">
+        <div style="font-size: 3.5rem; margin-bottom: 1rem;">🚫</div>
+        <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem; color: #ffffff;">Acesso Negado (HTTP 403)</h2>
+        <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;">
+            Você não possui as permissões necessárias para acessar este recurso clínico ou administrativo.
+            O controle de acesso baseado em perfis (<strong>Spring Security RBAC</strong>) protegeu esta funcionalidade restrita.
+        </p>
+
+        <div style="background-color: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; text-align: left; font-size: 0.85rem;">
+            <div style="color: var(--text-muted); margin-bottom: 0.25rem;">Usuário autenticado:</div>
+            <div style="font-weight: 600; color: #ffffff;" sec:authentication="name">usuario@clyvo.com</div>
+            <div style="color: var(--text-muted); margin-top: 0.5rem; margin-bottom: 0.25rem;">Perfil de acesso:</div>
+            <div>
+                <span sec:authorize="hasRole('VET')" class="role-tag role-vet">VETERINÁRIO (ROLE_VET)</span>
+                <span sec:authorize="hasRole('TUTOR')" class="role-tag role-tutor">TUTOR (ROLE_TUTOR)</span>
+                <span sec:authorize="hasRole('ADMIN')" class="role-tag role-admin">ADMIN (ROLE_ADMIN)</span>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+            <a th:href="@{/dashboard}" class="btn btn-primary">Voltar ao Painel Principal</a>
+            <form th:action="@{/logout}" method="post" style="display: inline;">
+                <button type="submit" class="btn btn-secondary">Trocar de Usuário</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

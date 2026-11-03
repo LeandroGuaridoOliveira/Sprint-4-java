@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Triagem e Agendamento')}"></head>
+<body>
+
+<header th:replace="~{fragments/layout :: navbar}"></header>
+
+<main class="main-content">
+    <div th:replace="~{fragments/layout :: alerts}"></div>
+
+    <div style="margin-bottom: 1.5rem;">
+        <a th:href="@{/agendamentos}" style="font-size: 0.85rem; color: var(--text-muted); display: inline-flex; align-items: center; gap: 0.25rem;">
+            ← Voltar para a lista de agendamentos
+        </a>
+        <h1 style="font-size: 1.75rem; font-weight: 800; color: #ffffff; margin-top: 0.5rem;">
+            ⚡ Triagem Clínica & Agendamento
+        </h1>
+        <p style="color: var(--text-muted); margin-top: 0.25rem;">
+            Agendamento com validação de horários de funcionamento e prevenção ativa de conflitos na agenda médica.
+        </p>
+    </div>
+
+    <div class="grid-2">
+        <!-- Formulario -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title"><span>📝</span> Dados da Triagem e Atendimento</h2>
+            </div>
+
+            <form th:action="@{/agendamentos/solicitar}" th:object="${dto}" method="post">
+                <!-- Pet -->
+                <div class="form-group">
+                    <label class="form-label" for="petId">Animal / Pet *</label>
+                    <select id="petId" th:field="*{petId}" class="form-control" required>
+                        <option value="">-- Selecione o Pet --</option>
+                        <option th:each="pet : ${pets}" th:value="${pet.id}" 
+                                th:text="${pet.nome} + ' (' + ${pet.especie} + ' - ' + ${pet.raca} + ') | Tutor: ' + ${pet.tutor.nome}">
+                            Thor (Canino - Golden)
+                        </option>
+                    </select>
+                    <div class="form-feedback-error" th:if="${#fields.hasErrors('petId')}" th:errors="*{petId}"></div>
+                </div>
+
+                <!-- Veterinario -->
+                <div class="form-group">
+                    <label class="form-label" for="veterinarioId">Médico Veterinário Responsável *</label>
+                    <select id="veterinarioId" th:field="*{veterinarioId}" class="form-control" required>
+                        <option value="">-- Selecione o Profissional --</option>
+                        <option th:each="vet : ${veterinarios}" th:value="${vet.id}" 
+                                th:text="${vet.nome} + ' (' + ${vet.crmv} + ' - ' + ${vet.especialidade} + ')'">
+                            Dra. Camila Rocha (CRMV-SP 12345)
+                        </option>
+                    </select>
+                    <div class="form-feedback-error" th:if="${#fields.hasErrors('veterinarioId')}" th:errors="*{veterinarioId}"></div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <!-- Tipo de Atendimento -->
+                    <div class="form-group">
+                        <label class="form-label" for="tipo">Modalidade *</label>
+                        <select id="tipo" th:field="*{tipo}" class="form-control" required>
+                            <option value="Consulta">Consulta Geral</option>
+                            <option value="Vacina">Vacinação / Protocolo</option>
+                            <option value="Exame">Coleta de Exames</option>
+                            <option value="Cirurgia">Procedimento Cirúrgico</option>
+                        </select>
+                        <div class="form-feedback-error" th:if="${#fields.hasErrors('tipo')}" th:errors="*{tipo}"></div>
+                    </div>
+
+                    <!-- Tipo de Triagem -->
+                    <div class="form-group">
+                        <label class="form-label" for="tipoTriagem">Nível de Triagem *</label>
+                        <select id="tipoTriagem" th:field="*{tipoTriagem}" class="form-control" required>
+                            <option value="Rotina / Preventivo">Rotina / Preventivo</option>
+                            <option value="Urgência Leve">Urgência Leve</option>
+                            <option value="Acompanhamento Crônico">Acompanhamento Crônico</option>
+                            <option value="Pós-Operatório">Pós-Operatório</option>
+                        </select>
+                        <div class="form-feedback-error" th:if="${#fields.hasErrors('tipoTriagem')}" th:errors="*{tipoTriagem}"></div>
+                    </div>
+                </div>
+
+                <!-- Data e Hora -->
+                <div class="form-group">
+                    <label class="form-label" for="dataHora">Data e Horário Desejados *</label>
+                    <input type="datetime-local" id="dataHora" th:field="*{dataHora}" class="form-control" required>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.35rem;">
+                        Horário de atendimento: Segunda a Sábado, das 08:00 às 18:00.
+                    </div>
+                    <div class="form-feedback-error" th:if="${#fields.hasErrors('dataHora')}" th:errors="*{dataHora}"></div>
+                </div>
+
+                <!-- Queixa Principal -->
+                <div class="form-group">
+                    <label class="form-label" for="queixaPrincipal">Queixa Principal / Motivo do Atendimento *</label>
+                    <textarea id="queixaPrincipal" th:field="*{queixaPrincipal}" class="form-control" rows="3" 
+                              placeholder="Descreva detalhadamente o comportamento, sintomas observados ou vacinas a aplicar..." required></textarea>
+                    <div class="form-feedback-error" th:if="${#fields.hasErrors('queixaPrincipal')}" th:errors="*{queixaPrincipal}"></div>
+                </div>
+
+                <!-- Checkbox Jejum -->
+                <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <input type="checkbox" id="jejumRecomendado" th:field="*{jejumRecomendado}" style="accent-color: var(--primary); width: 1.1rem; height: 1.1rem;">
+                    <label for="jejumRecomendado" style="font-size: 0.85rem; color: var(--text-main); cursor: pointer;">
+                        Solicitar jejum alimentar prévio de 8 horas ao tutor (obrigatório para exames de sangue e sedações)
+                    </label>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">
+                        Processar Triagem e Confirmar Horário 🚀
+                    </button>
+                    <a th:href="@{/agendamentos}" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Painel de Regras de Negocio e Instrucoes -->
+        <div>
+            <div class="card" style="border-left: 4px solid var(--primary);">
+                <h3 style="font-size: 1.1rem; color: #fff; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <span>🛡️</span> Regras de Agendamento da Clínica
+                </h3>
+                <ul style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.6; padding-left: 1.25rem;">
+                    <li><strong>Prevenção de Sobreposição (Double-Booking)</strong>: O sistema verifica na base de dados se o veterinário selecionado já possui consulta ativa no intervalo de 30 minutos em torno da hora marcada.</li>
+                    <li><strong>Disponibilidade Simultânea do Pet</strong>: O pet não pode ter mais de um compromisso no mesmo horário na clínica.</li>
+                    <li><strong>Horário Clínico Autorizado</strong>: Os agendamentos só são aceitos entre 08:00 e 18:00 de segunda a sábado (domingos são bloqueados).</li>
+                    <li><strong>Antecedência Mínima</strong>: Exige ao menos 1 hora de antecedência em relação ao momento atual.</li>
+                </ul>
+            </div>
+
+            <div class="card" style="background-color: var(--bg-main);">
+                <h4 style="font-size: 0.95rem; color: #fff; margin-bottom: 0.5rem;">
+                    💡 Orientações ao Usuário
+                </h4>
+                <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">
+                    Em caso de urgências graves fora do horário comercial, orientamos contato imediato com o plantão 24h da matriz. Para consultas eletivas, certifique-se de escolher um intervalo vago na agenda do profissional desejado.
+                </p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>
