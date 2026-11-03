@@ -58,7 +58,7 @@
                             Check-up de rotina
                         </td>
                         <td>
-                            <span th:class="'badge badge-' + ${#strings.toLowerCase(ag.status)}" th:text="${ag.status}">CONFIRMADO</span>
+                            <span th:replace="~{fragments/layout :: statusBadge(${ag.status})}"></span>
                         </td>
                         <td style="text-align: right;">
                             <div style="display: inline-flex; gap: 0.5rem; justify-content: flex-end;">

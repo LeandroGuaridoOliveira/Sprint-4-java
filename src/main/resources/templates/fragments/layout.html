@@ -396,24 +396,32 @@
         <div class="nav-user" sec:authorize="isAuthenticated()">
             <div class="user-pill">
                 <span style="color: #fff; font-weight: 600;" sec:authentication="name">usuario@clyvo.com</span>
-                <span sec:authorize="hasRole('VET')" class="role-tag role-vet">VETERINÁRIO</span>
-                <span sec:authorize="hasRole('TUTOR')" class="role-tag role-tutor">TUTOR</span>
-                <span sec:authorize="hasRole('ADMIN')" class="role-tag role-admin">ADMIN</span>
+                <th:block th:replace="~{fragments/layout :: roleBadge}" />
             </div>
             <form th:action="@{/logout}" method="post" style="display: inline;">
-                <button type="submit" class="btn-logout">Sair 🚪</button>
+                <button type="submit" class="btn-logout">Sair</button>
             </form>
         </div>
     </header>
 
+    <!-- Role Badge Fragment -->
+    <th:block th:fragment="roleBadge">
+        <span sec:authorize="hasRole('VET')" class="role-tag role-vet">VETERINÁRIO</span>
+        <span sec:authorize="hasRole('TUTOR')" class="role-tag role-tutor">TUTOR</span>
+        <span sec:authorize="hasRole('ADMIN')" class="role-tag role-admin">ADMIN</span>
+    </th:block>
+
+    <!-- Status Badge Fragment -->
+    <span th:fragment="statusBadge(status)"
+          th:class="'badge badge-' + ${#strings.toLowerCase(status)}"
+          th:text="${status}">CONFIRMADO</span>
+
     <!-- Alerts Fragment -->
     <div th:fragment="alerts">
         <div th:if="${sucesso}" class="alert alert-success">
-            <span>✅</span>
             <span th:text="${sucesso}">Operação realizada com sucesso!</span>
         </div>
         <div th:if="${erro}" class="alert alert-danger">
-            <span>⚠️</span>
             <span th:text="${erro}">Ocorreu um erro no processamento.</span>
         </div>
     </div>
@@ -426,7 +434,8 @@
             </div>
             <div style="display: flex; gap: 1.5rem;">
                 <a th:href="@{/swagger-ui.html}" target="_blank" style="color: var(--text-muted);">API Docs (Swagger)</a>
-                <a th:href="@{/h2-console}" target="_blank" style="color: var(--text-muted);">H2 Console</a>
+                <a th:if="${@environment.getProperty('spring.h2.console.enabled') == 'true'}"
+                   th:href="@{/h2-console}" target="_blank" style="color: var(--text-muted);">H2 Console</a>
             </div>
         </div>
     </footer>
