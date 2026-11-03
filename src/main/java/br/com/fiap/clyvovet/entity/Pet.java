@@ -39,9 +39,11 @@ public class Pet {
 
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
     @JsonIgnore
+    @Builder.Default
     private List<Agendamento> agendamentos = new ArrayList<>();
 
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
     @JsonIgnore
+    @Builder.Default
     private List<EventoSaude> eventosSaude = new ArrayList<>();
 }

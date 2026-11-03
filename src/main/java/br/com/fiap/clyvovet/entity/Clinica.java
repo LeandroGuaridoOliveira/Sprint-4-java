@@ -34,5 +34,6 @@ public class Clinica {
 
     @OneToMany(mappedBy = "clinica", cascade = CascadeType.ALL)
     @JsonIgnore
+    @Builder.Default
     private List<Veterinario> veterinarios = new ArrayList<>();
 }

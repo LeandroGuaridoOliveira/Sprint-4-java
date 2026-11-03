@@ -34,5 +34,6 @@ public class Tutor {
 
     @OneToMany(mappedBy = "tutor", cascade = CascadeType.ALL)
     @JsonIgnore
+    @Builder.Default
     private List<Pet> pets = new ArrayList<>();
 }
