@@ -2,7 +2,6 @@ package br.com.fiap.clyvovet.controller.web;
 
 import br.com.fiap.clyvovet.entity.*;
 import br.com.fiap.clyvovet.repository.*;
-import br.com.fiap.clyvovet.service.UsuarioDetailsService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,33 +19,28 @@ public class PetWebController {
     private final EventoSaudeRepository eventoSaudeRepository;
     private final AgendamentoRepository agendamentoRepository;
     private final ProtocoloRepository protocoloRepository;
-    private final UsuarioDetailsService usuarioDetailsService;
+    private final ContextoAutenticacaoWeb contextoAutenticacao;
 
     public PetWebController(PetRepository petRepository,
-                             EventoSaudeRepository eventoSaudeRepository,
-                             AgendamentoRepository agendamentoRepository,
-                             ProtocoloRepository protocoloRepository,
-                             UsuarioDetailsService usuarioDetailsService) {
+                            EventoSaudeRepository eventoSaudeRepository,
+                            AgendamentoRepository agendamentoRepository,
+                            ProtocoloRepository protocoloRepository,
+                            ContextoAutenticacaoWeb contextoAutenticacao) {
         this.petRepository = petRepository;
         this.eventoSaudeRepository = eventoSaudeRepository;
         this.agendamentoRepository = agendamentoRepository;
         this.protocoloRepository = protocoloRepository;
-        this.usuarioDetailsService = usuarioDetailsService;
+        this.contextoAutenticacao = contextoAutenticacao;
     }
 
     @GetMapping
     public String listarPets(Authentication authentication, Model model) {
-        Usuario usuario = usuarioDetailsService.buscarPorEmail(authentication.getName());
-        boolean isVet = authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_VET") || a.getAuthority().equals("ROLE_ADMIN"));
+        Usuario usuario = contextoAutenticacao.obterUsuario(authentication);
+        boolean isVet = contextoAutenticacao.possuiAcessoClinico(authentication);
 
-        List<Pet> pets;
-        if (isVet) {
-            pets = petRepository.findAll();
-        } else {
-            Long tutorId = (usuario != null && usuario.getTutorId() != null) ? usuario.getTutorId() : 1L;
-            pets = petRepository.findByTutorId(tutorId);
-        }
+        List<Pet> pets = isVet
+                ? petRepository.findAll()
+                : petRepository.findByTutorId(contextoAutenticacao.obterTutorIdOuPadrao(usuario));
 
         model.addAttribute("pets", pets);
         model.addAttribute("isVet", isVet);
@@ -60,8 +54,7 @@ public class PetWebController {
             return "redirect:/pets";
         }
 
-        boolean isVet = authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_VET") || a.getAuthority().equals("ROLE_ADMIN"));
+        boolean isVet = contextoAutenticacao.possuiAcessoClinico(authentication);
 
         List<EventoSaude> historico = eventoSaudeRepository.findByPetIdOrderByDataEventoDesc(pet.getId());
         List<Agendamento> agendamentos = agendamentoRepository.findByPetIdOrderByDataAgendamentoDesc(pet.getId());

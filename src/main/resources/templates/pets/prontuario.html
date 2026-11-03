@@ -112,7 +112,7 @@
                         <div style="font-weight: 600; color: #fff;" th:text="${#temporals.format(ag.dataAgendamento, 'dd/MM/yyyy HH:mm')}">15/09/2026 10:00</div>
                         <div style="font-size: 0.8rem; color: var(--text-muted);" th:text="${ag.tipo} + ' com ' + ${ag.veterinario.nome}">Consulta com Dra. Camila</div>
                     </div>
-                    <span th:class="'badge badge-' + ${#strings.toLowerCase(ag.status)}" th:text="${ag.status}">CONCLUIDO</span>
+                    <span th:replace="~{fragments/layout :: statusBadge(${ag.status})}"></span>
                 </div>
             </div>
         </div>

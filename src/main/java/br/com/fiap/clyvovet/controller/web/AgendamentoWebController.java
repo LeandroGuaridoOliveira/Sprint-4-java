@@ -4,13 +4,11 @@ import br.com.fiap.clyvovet.dto.SolicitacaoAgendamentoDTO;
 import br.com.fiap.clyvovet.entity.Agendamento;
 import br.com.fiap.clyvovet.entity.Pet;
 import br.com.fiap.clyvovet.entity.Usuario;
-import br.com.fiap.clyvovet.entity.Veterinario;
 import br.com.fiap.clyvovet.exception.RegraDeNegocioException;
 import br.com.fiap.clyvovet.repository.AgendamentoRepository;
 import br.com.fiap.clyvovet.repository.PetRepository;
 import br.com.fiap.clyvovet.repository.VeterinarioRepository;
 import br.com.fiap.clyvovet.service.TriagemAgendamentoService;
-import br.com.fiap.clyvovet.service.UsuarioDetailsService;
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -30,60 +28,39 @@ public class AgendamentoWebController {
     private final PetRepository petRepository;
     private final VeterinarioRepository veterinarioRepository;
     private final TriagemAgendamentoService triagemAgendamentoService;
-    private final UsuarioDetailsService usuarioDetailsService;
+    private final ContextoAutenticacaoWeb contextoAutenticacao;
 
     public AgendamentoWebController(AgendamentoRepository agendamentoRepository,
                                     PetRepository petRepository,
                                     VeterinarioRepository veterinarioRepository,
                                     TriagemAgendamentoService triagemAgendamentoService,
-                                    UsuarioDetailsService usuarioDetailsService) {
+                                    ContextoAutenticacaoWeb contextoAutenticacao) {
         this.agendamentoRepository = agendamentoRepository;
         this.petRepository = petRepository;
         this.veterinarioRepository = veterinarioRepository;
         this.triagemAgendamentoService = triagemAgendamentoService;
-        this.usuarioDetailsService = usuarioDetailsService;
+        this.contextoAutenticacao = contextoAutenticacao;
     }
 
-    /**
-     * Lista de agendamentos com visualização adaptada ao perfil do usuário
-     */
     @GetMapping
     public String listarAgendamentos(Authentication authentication, Model model) {
-        Usuario usuario = usuarioDetailsService.buscarPorEmail(authentication.getName());
-        boolean isVet = authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_VET") || a.getAuthority().equals("ROLE_ADMIN"));
+        Usuario usuario = contextoAutenticacao.obterUsuario(authentication);
+        boolean isVet = contextoAutenticacao.possuiAcessoClinico(authentication);
 
-        List<Agendamento> agendamentos;
-        if (isVet) {
-            agendamentos = agendamentoRepository.findAllByOrderByDataAgendamentoDesc();
-        } else {
-            Long tutorId = (usuario != null && usuario.getTutorId() != null) ? usuario.getTutorId() : 1L;
-            agendamentos = agendamentoRepository.findByPetTutorIdOrderByDataAgendamentoDesc(tutorId);
-        }
+        List<Agendamento> agendamentos = isVet
+                ? agendamentoRepository.findAllByOrderByDataAgendamentoDesc()
+                : agendamentoRepository.findByPetTutorIdOrderByDataAgendamentoDesc(
+                        contextoAutenticacao.obterTutorIdOuPadrao(usuario));
 
         model.addAttribute("agendamentos", agendamentos);
         model.addAttribute("isVet", isVet);
         return "agenda/lista";
     }
 
-    /**
-     * Exibição do Formulário de Triagem e Agendamento Clínico
-     */
     @GetMapping("/novo")
     public String formularioNovoAgendamento(Authentication authentication, Model model) {
-        Usuario usuario = usuarioDetailsService.buscarPorEmail(authentication.getName());
-        boolean isVet = authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_VET") || a.getAuthority().equals("ROLE_ADMIN"));
-
-        List<Pet> pets;
-        if (isVet) {
-            pets = petRepository.findAll();
-        } else {
-            Long tutorId = (usuario != null && usuario.getTutorId() != null) ? usuario.getTutorId() : 1L;
-            pets = petRepository.findByTutorId(tutorId);
-        }
-
-        List<Veterinario> veterinarios = veterinarioRepository.findAll();
+        Usuario usuario = contextoAutenticacao.obterUsuario(authentication);
+        boolean isVet = contextoAutenticacao.possuiAcessoClinico(authentication);
 
         if (!model.containsAttribute("dto")) {
             SolicitacaoAgendamentoDTO dto = SolicitacaoAgendamentoDTO.builder()
@@ -94,14 +71,10 @@ public class AgendamentoWebController {
             model.addAttribute("dto", dto);
         }
 
-        model.addAttribute("pets", pets);
-        model.addAttribute("veterinarios", veterinarios);
+        carregarListasFormulario(usuario, isVet, model);
         return "fluxos/novo-agendamento";
     }
 
-    /**
-     * Processamento das regras de negócio de agendamento, validação e verificação de conflitos de agenda
-     */
     @PostMapping("/solicitar")
     public String solicitarAgendamento(
             Authentication authentication,
@@ -110,9 +83,8 @@ public class AgendamentoWebController {
             Model model,
             RedirectAttributes redirectAttributes) {
 
-        Usuario usuario = usuarioDetailsService.buscarPorEmail(authentication.getName());
-        boolean isVet = authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_VET") || a.getAuthority().equals("ROLE_ADMIN"));
+        Usuario usuario = contextoAutenticacao.obterUsuario(authentication);
+        boolean isVet = contextoAutenticacao.possuiAcessoClinico(authentication);
 
         if (bindingResult.hasErrors()) {
             carregarListasFormulario(usuario, isVet, model);
@@ -121,7 +93,7 @@ public class AgendamentoWebController {
 
         try {
             triagemAgendamentoService.processarTriagemEAgendamento(dto);
-            redirectAttributes.addFlashAttribute("sucesso", 
+            redirectAttributes.addFlashAttribute("sucesso",
                     "Triagem concluída e agendamento confirmado com sucesso! Horário reservado no sistema clínico.");
             return "redirect:/agendamentos";
         } catch (RegraDeNegocioException ex) {
@@ -146,13 +118,9 @@ public class AgendamentoWebController {
     }
 
     private void carregarListasFormulario(Usuario usuario, boolean isVet, Model model) {
-        List<Pet> pets;
-        if (isVet) {
-            pets = petRepository.findAll();
-        } else {
-            Long tutorId = (usuario != null && usuario.getTutorId() != null) ? usuario.getTutorId() : 1L;
-            pets = petRepository.findByTutorId(tutorId);
-        }
+        List<Pet> pets = isVet
+                ? petRepository.findAll()
+                : petRepository.findByTutorId(contextoAutenticacao.obterTutorIdOuPadrao(usuario));
         model.addAttribute("pets", pets);
         model.addAttribute("veterinarios", veterinarioRepository.findAll());
     }

@@ -19,9 +19,7 @@
             <div style="font-weight: 600; color: #ffffff;" sec:authentication="name">usuario@clyvo.com</div>
             <div style="color: var(--text-muted); margin-top: 0.5rem; margin-bottom: 0.25rem;">Perfil de acesso:</div>
             <div>
-                <span sec:authorize="hasRole('VET')" class="role-tag role-vet">VETERINÁRIO (ROLE_VET)</span>
-                <span sec:authorize="hasRole('TUTOR')" class="role-tag role-tutor">TUTOR (ROLE_TUTOR)</span>
-                <span sec:authorize="hasRole('ADMIN')" class="role-tag role-admin">ADMIN (ROLE_ADMIN)</span>
+                <th:block th:replace="~{fragments/layout :: roleBadge}" />
             </div>
         </div>
 
