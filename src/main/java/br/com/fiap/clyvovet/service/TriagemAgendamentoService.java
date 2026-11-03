@@ -12,6 +12,7 @@ import br.com.fiap.clyvovet.repository.VeterinarioRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 
@@ -21,13 +22,16 @@ public class TriagemAgendamentoService {
     private final AgendamentoRepository agendamentoRepository;
     private final PetRepository petRepository;
     private final VeterinarioRepository veterinarioRepository;
+    private final Clock clock;
 
     public TriagemAgendamentoService(AgendamentoRepository agendamentoRepository,
                                    PetRepository petRepository,
-                                   VeterinarioRepository veterinarioRepository) {
+                                   VeterinarioRepository veterinarioRepository,
+                                   Clock clock) {
         this.agendamentoRepository = agendamentoRepository;
         this.petRepository = petRepository;
         this.veterinarioRepository = veterinarioRepository;
+        this.clock = clock;
     }
 
     /**
@@ -44,9 +48,10 @@ public class TriagemAgendamentoService {
                 .orElseThrow(() -> new ResourceNotFoundException("Veterinário não encontrado com ID: " + dto.getVeterinarioId()));
 
         LocalDateTime dataHora = dto.getDataHora();
+        LocalDateTime agora = LocalDateTime.now(clock);
 
         // 2. Validação temporal e regras de clínica
-        if (dataHora.isBefore(LocalDateTime.now())) {
+        if (dataHora.isBefore(agora)) {
             throw new RegraDeNegocioException("A data do agendamento deve ser uma data futura.");
         }
 
@@ -59,7 +64,7 @@ public class TriagemAgendamentoService {
             throw new RegraDeNegocioException("O expediente clínico funciona exclusivamente das 08:00 às 18:00.");
         }
 
-        if (dataHora.isBefore(LocalDateTime.now().plusHours(1))) {
+        if (dataHora.isBefore(agora.plusHours(1))) {
             throw new RegraDeNegocioException("Agendamentos exigem antecedência mínima de 1 hora para preparação da sala clínica.");
         }
 
