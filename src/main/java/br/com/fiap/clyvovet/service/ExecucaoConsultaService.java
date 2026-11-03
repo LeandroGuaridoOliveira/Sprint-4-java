@@ -14,6 +14,7 @@ import br.com.fiap.clyvovet.repository.VeterinarioRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -25,15 +26,18 @@ public class ExecucaoConsultaService {
     private final PetRepository petRepository;
     private final VeterinarioRepository veterinarioRepository;
     private final EventoSaudeRepository eventoSaudeRepository;
+    private final Clock clock;
 
     public ExecucaoConsultaService(AgendamentoRepository agendamentoRepository,
                                   PetRepository petRepository,
                                   VeterinarioRepository veterinarioRepository,
-                                  EventoSaudeRepository eventoSaudeRepository) {
+                                  EventoSaudeRepository eventoSaudeRepository,
+                                  Clock clock) {
         this.agendamentoRepository = agendamentoRepository;
         this.petRepository = petRepository;
         this.veterinarioRepository = veterinarioRepository;
         this.eventoSaudeRepository = eventoSaudeRepository;
+        this.clock = clock;
     }
 
     /**
@@ -87,7 +91,7 @@ public class ExecucaoConsultaService {
                 .pet(pet)
                 .veterinario(vet)
                 .tipoEvento(dto.getTipoProcedimento())
-                .dataEvento(LocalDate.now())
+                .dataEvento(LocalDate.now(clock))
                 .descricao(descricaoCompleta)
                 .resultado(resultadoFinal)
                 .build();
@@ -96,7 +100,7 @@ public class ExecucaoConsultaService {
 
         // 6. PASSO C: Atualização do Agendamento para status CONCLUIDO
         agendamento.setStatus("CONCLUIDO");
-        String registroFim = "Atendimento finalizado em " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) + 
+        String registroFim = "Atendimento finalizado em " + LocalDateTime.now(clock).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) +
                 " por " + vet.getNome();
         agendamento.setObservacao(agendamento.getObservacao() != null ? 
                 agendamento.getObservacao() + " | " + registroFim : registroFim);
