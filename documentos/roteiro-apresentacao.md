@@ -224,11 +224,12 @@ Aqui a gente fecha o ciclo: as validações que apareceram no código do Bloco 3
 
 ### 6.2 — Ciclo CRUD completo no recurso Pets (~1 min 20 s)
 
-Executar as cinco chamadas abaixo na ordem, usando **Try it out → Execute** em cada uma. Os retornos foram verificados contra o servidor em produção e são exatamente estes.
+Executar as chamadas abaixo na ordem, usando **Try it out → Execute** em cada uma. Os retornos foram verificados contra o servidor em produção e são exatamente estes.
 
 | # | Operação | Corpo / parâmetro | Resposta esperada |
 | :-- | :--- | :--- | :--- |
-| 1 | `GET /api/pets` | — | **200** · 3 pets |
+| 1 | `GET /api/pets` | todos os campos vazios | **200** · 3 pets |
+| 1b | `GET /api/pets` | `sort` = `string` | **400** · `Propriedade de ordenação inválida: 'string'` |
 | 2 | `POST /api/pets` | sem o campo `nome` | **400** · `{"nome":"Nome do pet é obrigatório"}` |
 | 3 | `POST /api/pets` | corpo completo (abaixo) | **201** · devolve o `id` criado |
 | 4 | `PUT /api/pets/{id}` | mesmo corpo com `peso: 12.5` | **200** · peso atualizado |
@@ -254,6 +255,8 @@ No passo 4, copiar o `id` devolvido no passo 3 e trocar apenas o `peso` para `12
 > "Vou percorrer o ciclo completo de CRUD aqui no Swagger, contra o servidor em produção, para mostrar que a API está realmente funcional.
 >
 > Começando pela listagem: duzentos, três pets cadastrados. A resposta vem paginada, no formato padrão do Spring, com o conteúdo e os metadados de paginação.
+>
+> Vou aproveitar para mostrar o tratamento de erro da paginação. Se eu pedir ordenação por um campo que não existe na entidade, a API responde quatrocentos dizendo exatamente qual propriedade é inválida — e não um erro interno genérico. Erro de entrada do cliente é problema do cliente, e o código HTTP tem que refletir isso.
 >
 > Agora vou tentar cadastrar um animal sem o nome, de propósito. O retorno é quatrocentos, e repare que a resposta não é um erro genérico: ela diz exatamente qual campo falhou e por quê. Isso vem das anotações de validação no DTO, tratadas por um handler global de exceções.
 >
