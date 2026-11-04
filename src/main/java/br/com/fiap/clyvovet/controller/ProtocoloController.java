@@ -5,6 +5,7 @@ import br.com.fiap.clyvovet.service.ProtocoloService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -30,7 +31,7 @@ public class ProtocoloController {
     public ResponseEntity<Page<ProtocoloDTO>> listar(
             @RequestParam(required = false) String especie,
             @RequestParam(required = false) String tipoProtocolo,
-            @PageableDefault(size = 10, sort = "especie") Pageable pageable) {
+            @ParameterObject @PageableDefault(size = 10, sort = "especie") Pageable pageable) {
         return ResponseEntity.ok(service.listar(especie, tipoProtocolo, pageable));
     }
 

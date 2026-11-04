@@ -9,6 +9,10 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -63,5 +67,37 @@ class ControleDeAcessoIntegrationTest {
     void rotasRestDevemPermanecerAcessiveis() throws Exception {
         mockMvc.perform(get("/api/pets"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Ordenação inválida na API REST retorna 400 Bad Request amigável")
+    void ordenacaoInvalidaDeveRetornar400() throws Exception {
+        mockMvc.perform(get("/api/pets").param("sort", "string"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.error").value("Requisição inválida"));
+    }
+
+    @Test
+    @DisplayName("POST no logout mesmo sem CSRF ou com sessão expirada redireciona para login sem erro 500")
+    void postLogoutSemCsrfRedirecionaParaLogin() throws Exception {
+        mockMvc.perform(post("/logout"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login?logout=true"));
+    }
+
+    @Test
+    @DisplayName("POST em /403 é aceito e responde com status 403 Forbidden")
+    void post403DeveRetornarForbidden() throws Exception {
+        mockMvc.perform(post("/403"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("Método HTTP não suportado na API REST retorna 405 Method Not Allowed")
+    void metodoNaoSuportadoDeveRetornar405() throws Exception {
+        mockMvc.perform(patch("/api/pets"))
+                .andExpect(status().isMethodNotAllowed())
+                .andExpect(jsonPath("$.status").value(405));
     }
 }

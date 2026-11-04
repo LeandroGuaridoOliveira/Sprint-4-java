@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Erro no Sistema')}"></head>
+<body>
+
+<header th:replace="~{fragments/layout :: navbar}"></header>
+
+<main class="main-content" style="display: flex; align-items: center; justify-content: center; min-height: 70vh;">
+    <div class="card" style="max-width: 540px; text-align: center; padding: 2.5rem 2rem;">
+        <div style="font-size: 3.5rem; margin-bottom: 1rem;">⚠️</div>
+        <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem; color: #ffffff;">Ops! Algo deu errado</h2>
+        <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;" th:text="${message != null and !message.empty ? message : 'Não foi possível processar a requisição solicitada.'}">
+            Não foi possível processar a requisição solicitada.
+        </p>
+
+        <div style="background-color: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; text-align: left; font-size: 0.85rem;">
+            <div style="color: var(--text-muted); margin-bottom: 0.25rem;">Código do erro:</div>
+            <div style="font-weight: 600; color: #ffffff;" th:text="${status != null ? status : 500}">500</div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+            <a th:href="@{/dashboard}" class="btn btn-primary">Voltar ao Painel</a>
+            <a th:href="@{/login}" class="btn btn-secondary">Ir para Login</a>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>
