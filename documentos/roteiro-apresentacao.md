@@ -1,6 +1,6 @@
 # Roteiro de Gravação — Clyvo VET (Sprint 4)
 
-**Duração máxima permitida:** 15 minutos. **Meta deste roteiro:** 12 minutos.
+**Duração máxima permitida:** 15 minutos. **Meta deste roteiro:** 13 minutos.
 **URL de produção:** https://clyvo-vet.onrender.com
 
 ## Como este roteiro foi montado
@@ -206,27 +206,77 @@ Aqui a gente fecha o ciclo: as validações que apareceram no código do Bloco 3
 
 ---
 
-# BLOCO 6 — O contrato da API
-**Narração: Leandro** · **Tempo: 07:50 – 08:40** · **Tela: aba do Swagger**
+# BLOCO 6 — O contrato da API e o CRUD completo
+**Narração: Leandro** · **Tempo: 07:50 – 09:30** · **Tela: aba do Swagger**
+
+> ⚠️ **Regra absoluta deste bloco: nunca use DELETE no Thor (id 1), na Luna (id 2) nem no Pipoca (id 3).**
+> O Thor é usado nos Blocos 7 e 8. Apagá-lo inutiliza o resto da gravação. O ciclo CRUD é feito num animal descartável, criado e removido dentro do próprio bloco.
+
+### 6.1 — Visão geral do contrato (~20 s)
 
 **Ações:**
 1. Abrir a aba do Swagger (`/swagger-ui.html`).
-2. Mostrar a lista de controllers.
-3. Expandir **GET `/api/pets`**, clicar em **Try it out** e depois em **Execute**.
-4. Mostrar o JSON de resposta com Thor, Luna e Pipoca.
+2. Mostrar a lista de controllers, recolhida, para dar noção do tamanho da API.
 
 **Fala:**
 
-> "Toda a API REST está documentada com OpenAPI, publicada junto com a aplicação. São sete recursos expostos: pets, agendamentos, tutores, veterinários, clínicas, protocolos preventivos e eventos de saúde.
+> "Toda a API REST está documentada com OpenAPI, publicada junto com a aplicação. São sete recursos expostos: pets, agendamentos, tutores, veterinários, clínicas, protocolos preventivos e eventos de saúde. Esses são exatamente os endpoints que o nosso aplicativo mobile consome — não existe backend separado nem dado duplicado."
+
+### 6.2 — Ciclo CRUD completo no recurso Pets (~1 min 20 s)
+
+Executar as cinco chamadas abaixo na ordem, usando **Try it out → Execute** em cada uma. Os retornos foram verificados contra o servidor em produção e são exatamente estes.
+
+| # | Operação | Corpo / parâmetro | Resposta esperada |
+| :-- | :--- | :--- | :--- |
+| 1 | `GET /api/pets` | — | **200** · 3 pets |
+| 2 | `POST /api/pets` | sem o campo `nome` | **400** · `{"nome":"Nome do pet é obrigatório"}` |
+| 3 | `POST /api/pets` | corpo completo (abaixo) | **201** · devolve o `id` criado |
+| 4 | `PUT /api/pets/{id}` | mesmo corpo com `peso: 12.5` | **200** · peso atualizado |
+| 5 | `DELETE /api/pets/{id}` | o `id` criado no passo 3 | **204** · sem conteúdo |
+
+Corpo para o passo 3 (o passo 2 é este mesmo, só que sem a linha do `nome`):
+
+```json
+{
+  "nome": "Mel",
+  "especie": "Canino",
+  "raca": "SRD",
+  "dataNascimento": "2024-01-10",
+  "peso": 10.0,
+  "tutorId": 1
+}
+```
+
+No passo 4, copiar o `id` devolvido no passo 3 e trocar apenas o `peso` para `12.5`.
+
+**Fala (narrar por cima das execuções):**
+
+> "Vou percorrer o ciclo completo de CRUD aqui no Swagger, contra o servidor em produção, para mostrar que a API está realmente funcional.
 >
-> Vou executar o GET de pets direto por aqui, contra o servidor em produção. A resposta vem paginada, no formato padrão do Spring, com o conteúdo e os metadados de paginação.
+> Começando pela listagem: duzentos, três pets cadastrados. A resposta vem paginada, no formato padrão do Spring, com o conteúdo e os metadados de paginação.
 >
-> Esses são exatamente os endpoints que o nosso aplicativo mobile consome. Não existe backend separado nem dado duplicado: é a mesma aplicação respondendo para o portal web e para o celular."
+> Agora vou tentar cadastrar um animal sem o nome, de propósito. O retorno é quatrocentos, e repare que a resposta não é um erro genérico: ela diz exatamente qual campo falhou e por quê. Isso vem das anotações de validação no DTO, tratadas por um handler global de exceções.
+>
+> Corrigindo e enviando o cadastro completo: duzentos e um, criado, e a API devolve o registro já com o identificador gerado.
+>
+> Atualizando o peso desse mesmo animal com o PUT: duzentos, e o novo peso já volta na resposta.
+>
+> E por fim o DELETE: duzentos e quatro, sem conteúdo, que é a resposta correta para uma remoção bem-sucedida.
+>
+> Criar, ler, atualizar e remover, com validação e com os códigos HTTP corretos em cada operação. Os outros seis recursos seguem exatamente o mesmo padrão."
+
+### 6.3 — Fechamento do bloco (~10 s)
+
+**Ação:** executar `GET /api/pets` de novo.
+
+**Fala:**
+
+> "Listando outra vez, voltamos aos três animais originais: o registro de teste foi removido e a base está consistente."
 
 ---
 
 # BLOCO 7 — Fluxo clínico do veterinário
-**Narração: KAIKY (RM 564578)** · **Tempo: 08:40 – 10:20**
+**Narração: KAIKY (RM 564578)** · **Tempo: 09:30 – 11:10**
 
 **Ações que o Leandro grava enquanto a fala do Kaiky roda por cima:**
 1. Fazer logout do tutor e entrar como **`veterinario@clyvo.com` / `admin123`**.
@@ -253,7 +303,7 @@ Aqui a gente fecha o ciclo: as validações que apareceram no código do Bloco 3
 ---
 
 # BLOCO 8 — Integração com as outras disciplinas
-**Narração: Leandro** · **Tempo: 10:20 – 11:40** · **Tela: celular com o app + prontuário no navegador**
+**Narração: Leandro** · **Tempo: 11:10 – 12:30** · **Tela: celular com o app + prontuário no navegador**
 
 **Ações:**
 1. Com o prontuário ainda aberto no navegador, trazer a tela do celular para o vídeo.
@@ -273,7 +323,7 @@ Aqui a gente fecha o ciclo: as validações que apareceram no código do Bloco 3
 ---
 
 # BLOCO 9 — Encerramento
-**Narração: Leandro** · **Tempo: 11:40 – 12:10** · **Tela: dashboard do portal**
+**Narração: Leandro** · **Tempo: 12:30 – 13:00** · **Tela: dashboard do portal**
 
 **Ação:** voltar ao dashboard e deixar a tela parada.
 
@@ -291,6 +341,7 @@ Aqui a gente fecha o ciclo: as validações que apareceram no código do Bloco 3
 - [ ] Os três integrantes aparecem nominalmente no Bloco 1, com RM.
 - [ ] No Bloco 3, o código ficou legível em tela cheia e a suíte de testes apareceu verde.
 - [ ] As três mensagens de erro da triagem ficaram legíveis na tela no Bloco 5.
+- [ ] No Bloco 6, o ciclo CRUD foi feito num animal descartável e o Thor, a Luna e o Pipoca permaneceram intactos.
 - [ ] O peso 33,2 kg aparece tanto no prontuário web quanto no app.
 - [ ] Duração final abaixo de 15 minutos.
 - [ ] Nenhuma aba pessoal, notificação ou dado sensível visível em nenhum momento.
