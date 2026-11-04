@@ -3,6 +3,8 @@ package br.com.fiap.clyvovet.controller.web;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
@@ -24,7 +26,7 @@ public class AuthWebController {
         return "auth/login";
     }
 
-    @GetMapping("/403")
+    @RequestMapping(value = "/403", method = {RequestMethod.GET, RequestMethod.POST})
     public String accessDeniedPage(Model model) {
         return "auth/acesso-negado";
     }

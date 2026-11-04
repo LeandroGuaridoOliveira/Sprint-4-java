@@ -81,14 +81,27 @@ public class SecurityConfig {
                 .permitAll()
             )
             .logout(logout -> logout
-                .logoutUrl("/logout")
+                .logoutRequestMatcher(new org.springframework.security.web.util.matcher.AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/login?logout=true")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
                 .permitAll()
             )
             .exceptionHandling(ex -> ex
-                .accessDeniedPage("/403")
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    if (request.getRequestURI().endsWith("/logout")) {
+                        response.sendRedirect(request.getContextPath() + "/login?logout=true");
+                        return;
+                    }
+                    if (request.getRequestURI().startsWith("/api/")) {
+                        response.setStatus(jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN);
+                        response.setContentType("application/json;charset=UTF-8");
+                        response.getWriter().write("{\"status\":403,\"error\":\"Acesso negado\",\"message\":\"" + accessDeniedException.getMessage() + "\"}");
+                        return;
+                    }
+                    response.setStatus(jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN);
+                    request.getRequestDispatcher("/403").forward(request, response);
+                })
             );
 
         return http.build();
