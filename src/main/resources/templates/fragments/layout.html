@@ -387,7 +387,7 @@
             <li><a th:href="@{/dashboard}" class="nav-link">Painel</a></li>
             <li><a th:href="@{/agendamentos}" class="nav-link">Agendamentos</a></li>
             <li><a th:href="@{/agendamentos/novo}" class="nav-link">⚡ Triagem & Agendar</a></li>
-            <li sec:authorize="hasRole('VET')">
+            <li sec:authorize="hasAnyRole('VET', 'ADMIN')">
                 <a th:href="@{/atendimentos}" class="nav-link" style="color: var(--primary);">🩺 Fila Clínica</a>
             </li>
             <li><a th:href="@{/pets}" class="nav-link">Pets & Prontuários</a></li>

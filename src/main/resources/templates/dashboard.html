@@ -23,7 +23,7 @@
             <a th:href="@{/agendamentos/novo}" class="btn btn-primary">
                 <span>⚡</span> Novo Agendamento
             </a>
-            <a sec:authorize="hasRole('VET')" th:href="@{/atendimentos}" class="btn btn-secondary">
+            <a sec:authorize="hasAnyRole('VET', 'ADMIN')" th:href="@{/atendimentos}" class="btn btn-secondary">
                 <span>🩺</span> Fila de Consultas
             </a>
         </div>
@@ -50,8 +50,8 @@
         </div>
     </div>
 
-    <!-- VISÃO DO VETERINÁRIO (ROLE_VET) -->
-    <div sec:authorize="hasRole('VET')">
+    <!-- VISÃO DO VETERINÁRIO E ADMIN (SUPERVISÃO CLÍNICA) -->
+    <div sec:authorize="hasAnyRole('VET', 'ADMIN')">
         <div class="card">
             <div class="card-header">
                 <h2 class="card-title">

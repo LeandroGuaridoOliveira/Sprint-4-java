@@ -62,8 +62,8 @@
                         </td>
                         <td style="text-align: right;">
                             <div style="display: inline-flex; gap: 0.5rem; justify-content: flex-end;">
-                                <!-- Botão de Atender (apenas para VET em agendamento pendente) -->
-                                <a sec:authorize="hasRole('VET')" 
+                                <!-- Botão de Atender (para VET e ADMIN em agendamento pendente) -->
+                                <a sec:authorize="hasAnyRole('VET', 'ADMIN')" 
                                    th:if="${ag.status != 'CONCLUIDO' and ag.status != 'CANCELADO'}"
                                    th:href="@{'/atendimentos/' + ${ag.id} + '/iniciar'}" 
                                    class="btn btn-sm btn-primary" title="Iniciar Consulta Clínica">

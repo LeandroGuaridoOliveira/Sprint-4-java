@@ -62,11 +62,11 @@ public class SecurityConfig {
                 // Autenticação e páginas públicas
                 .requestMatchers("/login", "/403", "/erro", "/error").permitAll()
                 
-                // Atendimento clínico e evolução de prontuário médico (Exclusivo para Veterinários)
-                .requestMatchers("/atendimentos/**", "/fluxo/consulta/**").hasRole("VET")
+                // Atendimento clínico e evolução de prontuário médico (Veterinários e Supervisão Admin)
+                .requestMatchers("/atendimentos/**", "/fluxo/consulta/**").hasAnyRole("VET", "ADMIN")
                 
-                // Triagem clínica e solicitação de consultas (Tutores e Veterinários)
-                .requestMatchers("/agendamentos/novo", "/fluxo/agendamento/**").hasAnyRole("TUTOR", "VET")
+                // Triagem clínica e solicitação de consultas (Tutores, Veterinários e Admin)
+                .requestMatchers("/agendamentos/novo", "/fluxo/agendamento/**").hasAnyRole("TUTOR", "VET", "ADMIN")
                 
                 // Dashboard e áreas internas autenticadas
                 .requestMatchers("/", "/dashboard", "/pets/**", "/agendamentos/**", "/clinicas/**").authenticated()
