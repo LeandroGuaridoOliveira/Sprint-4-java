@@ -2,6 +2,16 @@
 
 Plataforma web (Spring MVC + Thymeleaf) e API RESTful voltada à gestão contínua de saúde preventiva, triagem inteligente de agendamentos e prontuário unificado para clínicas veterinárias e tutores.
 
+## Aplicação no ar
+
+| Recurso | Endereço |
+| :--- | :--- |
+| **Portal Web** | https://clyvo-vet.onrender.com |
+| **Swagger UI** | https://clyvo-vet.onrender.com/swagger-ui.html |
+| **OpenAPI JSON** | https://clyvo-vet.onrender.com/api-docs |
+
+> O serviço roda no plano gratuito do Render, que hiberna após período de inatividade. A primeira requisição pode levar cerca de 50 segundos até o contêiner subir; as seguintes respondem normalmente.
+
 ## Integrantes (Turma 2TDSPV)
 
 | Nome | RM |
@@ -40,7 +50,7 @@ O **Clyvo VET** resolve esse cenário unificando dois módulos complementares so
 - **Jakarta Bean Validation** (validação declarativa nos DTOs de entrada web e REST)
 - **Springdoc OpenAPI 2.5.0** (documentação interativa Swagger UI em `/swagger-ui.html`)
 - **Spring Cache** (`@EnableCaching` para otimização de leituras frequentes)
-- **JUnit 5, Mockito & Spring Security Test (`MockMvc`)** (26 testes automatizados cobrindo regras temporais, fluxos clínicos e controle de acesso)
+- **JUnit 5, Mockito & Spring Security Test (`MockMvc`)** (37 testes automatizados cobrindo regras temporais, fluxos clínicos, invalidação de cache e controle de acesso)
 - **Docker & Render** (`Dockerfile` multi-stage com Eclipse Temurin 17 JRE Jammy e manifesto `render.yaml`)
 
 ### Diagrama de Arquitetura e Fluxo de Dados
@@ -112,7 +122,7 @@ A solução **Clyvo VET** consolida na prática os conhecimentos das demais disc
 | **Java Advanced** | Arquitetura em camadas com Spring Boot 3.2, Spring MVC + Thymeleaf, Spring Security 6 (RBAC), Bean Validation, OpenAPI 3 e testes automatizados com JUnit 5 / MockMvc. | Pacotes em [`src/main/java/br/com/fiap/clyvovet`](src/main/java/br/com/fiap/clyvovet), templates em [`src/main/resources/templates`](src/main/resources/templates) e testes em [`src/test/java`](src/test/java). |
 | **Mobile Application Development** | Consumo direto da API REST (`/api/pets`, `/api/agendamentos`, `/api/clinicas`, `/api/veterinarios`, `/api/protocolos`, `/api/eventos-saude`) pelo aplicativo **Clyvo Connect** (React Native / Expo 57 + TanStack Query), disparando notificações locais no celular a partir das regras de agendamento e conflito deste backend. | Repositório Mobile (`2tdspv-challenge-clyvo-connect`), configuração CORS em [`CorsConfig.java`](src/main/java/br/com/fiap/clyvovet/config/CorsConfig.java) e liberação `/api/**` em [`SecurityConfig.java`](src/main/java/br/com/fiap/clyvovet/config/SecurityConfig.java). |
 | **Mastering Relational and Non-Relational Database** | Modelagem relacional em 3ª Forma Normal (3FN), integridade referencial por chaves estrangeiras, índices de busca e versionamento evolutivo de schema via Flyway. | Scripts SQL [`V1__create_domain_tables.sql`](src/main/resources/db/migration/V1__create_domain_tables.sql), [`V2__create_security_tables.sql`](src/main/resources/db/migration/V2__create_security_tables.sql) e [`V3__insert_seed_data.sql`](src/main/resources/db/migration/V3__insert_seed_data.sql). |
-| **DevOps Tools & Cloud Computing / Compliance & QA** | Containerização Docker multi-stage, infraestrutura como código (`render.yaml`), segregação de perfis (`dev`/`prod`), coleção Postman automatizável e suíte de 26 testes de unidade e integração. | [`Dockerfile`](Dockerfile), [`render.yaml`](render.yaml), [`application-prod.properties`](src/main/resources/application-prod.properties), [`ClyvoVET-API.postman_collection.json`](documentos/ClyvoVET-API.postman_collection.json) e [`cronograma.md`](documentos/cronograma.md). |
+| **DevOps Tools & Cloud Computing / Compliance & QA** | Containerização Docker multi-stage, infraestrutura como código (`render.yaml`), segregação de perfis (`dev`/`prod`), coleção Postman automatizável e suíte de 37 testes de unidade e integração. | [`Dockerfile`](Dockerfile), [`render.yaml`](render.yaml), [`application-prod.properties`](src/main/resources/application-prod.properties), [`ClyvoVET-API.postman_collection.json`](documentos/ClyvoVET-API.postman_collection.json) e [`cronograma.md`](documentos/cronograma.md). |
 
 ---
 
@@ -124,7 +134,7 @@ A tela de login (`/login`) conta com preenchimento rápido para os três perfis 
 | :--- | :--- | :--- | :--- | :--- |
 | **Médica Veterinária** | `veterinario@clyvo.com` | `admin123` | `ROLE_VET` | Painel clínico completo, **Fila Clínica** (`/atendimentos`), início e conclusão de consultas com atualização de prontuário, triagem e visualização de todos os pets. |
 | **Tutor** | `tutor@clyvo.com` | `tutor123` | `ROLE_TUTOR` | Painel restrito aos próprios animais (`Thor` e `Luna`), visualização de prontuário e protocolos preventivos, solicitação e cancelamento dos próprios agendamentos (bloqueado com **HTTP 403** em `/atendimentos`). |
-| **Administrador** | `admin@clyvo.com` | `admin123` | `ROLE_ADMIN` | Visão gerencial de agendamentos, pets e indicadores globais da plataforma. |
+| **Administrador** | `admin@clyvo.com` | `admin123` | `ROLE_ADMIN` | Perfil de supervisão: visão gerencial de indicadores, acesso à **Fila Clínica** (`/atendimentos`) e à triagem, além da visualização de todos os pets e prontuários da plataforma. |
 
 ---
 
@@ -168,7 +178,7 @@ A coleção completa para testes no Postman encontra-se em [`documentos/ClyvoVET
 ./mvnw spring-boot:run
 ```
 
-### Executando a Suíte de Testes Automatizados (26 testes)
+### Executando a Suíte de Testes Automatizados (37 testes)
 ```bash
 # Windows
 .\mvnw.cmd test
@@ -185,20 +195,20 @@ docker run -p 8080:8080 -e SPRING_PROFILES_ACTIVE=prod clyvo-vet
 
 ### Endereços Locais e em Nuvem
 
-| Recurso | Endereço Local | Observação |
+| Recurso | Endereço Local | Em Nuvem (Render) |
 | :--- | :--- | :--- |
-| **Portal Web** | `http://localhost:8080` | Redireciona para `/login` ou `/dashboard` |
-| **Swagger UI** | `http://localhost:8080/swagger-ui.html` | Documentação interativa da API REST |
-| **OpenAPI JSON** | `http://localhost:8080/api-docs` | Especificação OpenAPI 3.0 |
-| **Console H2** | `http://localhost:8080/h2-console` | Apenas perfil `dev` (`jdbc:h2:mem:clyvovet`, usuário `sa`, sem senha) |
+| **Portal Web** | `http://localhost:8080` | https://clyvo-vet.onrender.com |
+| **Swagger UI** | `http://localhost:8080/swagger-ui.html` | https://clyvo-vet.onrender.com/swagger-ui.html |
+| **OpenAPI JSON** | `http://localhost:8080/api-docs` | https://clyvo-vet.onrender.com/api-docs |
+| **Console H2** | `http://localhost:8080/h2-console` | Desabilitado em produção (exclusivo do perfil `dev`) |
 
 ---
 
 ## 8. Deploy em Nuvem (Render) e Artefatos de Entrega
 
-O repositório conta com o manifesto [`render.yaml`](render.yaml) e [`Dockerfile`](Dockerfile) prontos para publicação automática no **Render** (ambiente Docker, perfil `SPRING_PROFILES_ACTIVE=prod`, porta dinâmica `${PORT:8080}`).
+A aplicação está publicada e acessível em **https://clyvo-vet.onrender.com**, a partir do manifesto [`render.yaml`](render.yaml) e do [`Dockerfile`](Dockerfile) multi-stage (ambiente Docker, perfil `SPRING_PROFILES_ACTIVE=prod`, porta dinâmica `${PORT:8080}`, branch `develop`).
 
-- **Repositório GitHub (Java Advanced):** `https://github.com/LeandroGuaridoOliveira/Sprint-4-java`
+- **Aplicação em nuvem:** https://clyvo-vet.onrender.com
+- **Repositório GitHub (Java Advanced):** https://github.com/LeandroGuaridoOliveira/Sprint-4-java
 - **Coleção Postman:** [`documentos/ClyvoVET-API.postman_collection.json`](documentos/ClyvoVET-API.postman_collection.json)
 - **Cronograma de Sprints:** [`documentos/cronograma.md`](documentos/cronograma.md)
-- **Roteiro de Apresentação em Vídeo:** [`documentos/roteiro-apresentacao.md`](documentos/roteiro-apresentacao.md)
