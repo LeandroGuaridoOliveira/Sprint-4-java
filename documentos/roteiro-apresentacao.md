@@ -379,14 +379,16 @@ Bloco novo, criado depois que o acesso de supervisão do ADMIN foi implementado.
 
 **Ações:**
 1. Com o prontuário ainda aberto no navegador, trazer a tela do celular para o vídeo.
-2. No app **Clyvo Connect**, abrir a lista de pets e mostrar o **Thor com o peso 33,2 kg** — o valor que acabou de ser gravado pelo portal web.
+2. No app **Clyvo Connect**, abrir a lista de pets e mostrar o **Thor com o peso 33,5 kg** — o valor que acabou de ser gravado pelo portal web.
+
+> O peso correto aqui é **33,5 kg**, e não os 33,2 previstos no roteiro original. Foi esse o valor digitado na gravação do Bloco 7, confirmado consultando a API de produção. O número narrado no Bloco 8 precisa bater com o que o app exibe.
 3. Alternar o tema claro/escuro no app.
 
 **Fala:**
 
 > "Este é o ponto que amarra o semestre inteiro. No celular está o Clyvo Connect, nosso aplicativo de Mobile Application Development, feito em React Native com Expo. Ele não tem banco próprio nem backend próprio: consome a mesma API REST que acabamos de ver no Swagger.
 >
-> Repare no peso do Thor: trinta e três vírgula dois quilos. É o valor que a veterinária registrou no portal web há poucos segundos. O dado atravessou as duas disciplinas sem nenhuma sincronização manual.
+> Repare no peso do Thor: trinta e três vírgula cinco quilos. É o valor que a veterinária registrou no portal web há poucos segundos. O dado atravessou as duas disciplinas sem nenhuma sincronização manual.
 >
 > De Banco de Dados, a modelagem relacional está nas migrations Flyway que mostrei na IDE, com as tabelas de domínio e as de segurança separadas e versionadas.
 >
@@ -416,7 +418,7 @@ Bloco novo, criado depois que o acesso de supervisão do ADMIN foi implementado.
 - [ ] No Bloco 3, o código ficou legível em tela cheia e a suíte de testes apareceu verde.
 - [ ] As três mensagens de erro da triagem ficaram legíveis na tela no Bloco 5.
 - [ ] No Bloco 6, o ciclo CRUD foi feito num animal descartável e o Thor, a Luna e o Pipoca permaneceram intactos.
-- [ ] O peso 33,2 kg aparece tanto no prontuário web quanto no app.
+- [ ] O peso 33,5 kg aparece tanto no prontuário web quanto no app.
 - [ ] Duração final abaixo de 15 minutos.
 - [ ] Nenhuma aba pessoal, notificação ou dado sensível visível em nenhum momento.
 - [ ] Vídeo publicado no YouTube como **não listado** e o link adicionado ao README.
