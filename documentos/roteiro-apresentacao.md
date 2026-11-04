@@ -1,7 +1,34 @@
 # Roteiro de Gravação — Clyvo VET (Sprint 4)
 
-**Duração máxima permitida:** 15 minutos. **Meta deste roteiro:** 13 minutos.
+**Duração máxima permitida:** 15 minutos. **Meta deste roteiro:** 14 minutos.
 **URL de produção:** https://clyvo-vet.onrender.com
+
+## Estado da gravação
+
+| Bloco | Conteúdo | Situação |
+| :--- | :--- | :--- |
+| 1 | Abertura | ✅ gravado |
+| 2 | Problema e proposta | ✅ gravado |
+| 3 | Código na IDE | ✅ gravado |
+| 4 | Perfil do tutor e RBAC (áudio do Gabriel) | ✅ gravado |
+| 5 | Regras de negócio rodando | ✅ gravado |
+| 6 | API e CRUD no Swagger | ✅ gravado |
+| **7** | **Fluxo clínico do veterinário (áudio do Kaiky)** | ⬜ **pendente** |
+| **7B** | **Supervisão administrativa** | ⬜ **pendente — bloco novo** |
+| **8** | **Integração com as outras disciplinas** | ⬜ **pendente** |
+| **9** | **Encerramento** | ⬜ **pendente** |
+
+### O que mudou depois que você gravou o Bloco 6
+
+O perfil **ADMIN** passou a ter acesso de supervisão clínica. Antes ele via o menu "Triagem & Agendar" e tomava 403 ao clicar — a interface oferecia o que o perfil não podia fazer. Agora as permissões estão alinhadas, e isso virou o **Bloco 7B**, que não existia antes.
+
+**O material já gravado continua válido.** Verifiquei cada caso:
+
+- **Bloco 4 (tutor):** o comportamento do TUTOR não mudou em nada. Ele continua recebendo 403 em `/atendimentos` e continua sem ver "Fila Clínica" no menu. A fala do Gabriel segue correta.
+- **Bloco 5 e 6:** nada nesses fluxos foi tocado.
+- **Bloco 3 (IDE):** aqui há uma diferença cosmética. Você filmou o `SecurityConfig` quando as linhas 66 e 69 diziam `hasRole("VET")` e `hasAnyRole("TUTOR","VET")`. Hoje elas incluem `ADMIN`. A estrutura e os números de linha são os mesmos, só as listas de perfis cresceram. **Não vale regravar** — o Bloco 7B explica a regra de supervisão em voz alta, o que cobre a diferença naturalmente.
+
+---
 
 ## Como este roteiro foi montado
 
@@ -11,7 +38,7 @@ A gravação de tela é feita integralmente por **Leandro Guarido de Oliveira (R
 
 | Narrador | Blocos | Tempo aproximado |
 | :--- | :--- | ---: |
-| Leandro (RM 561760) | 1, 2, 3, 5, 6, 8, 9 | ~9 min |
+| Leandro (RM 561760) | 1, 2, 3, 5, 6, 7B, 8, 9 | ~10 min |
 | Gabriel (RM 562325) | 4 | ~1 min 30 s |
 | Kaiky (RM 564578) | 7 | ~1 min 40 s |
 
@@ -36,7 +63,11 @@ A gravação de tela é feita integralmente por **Leandro Guarido de Oliveira (R
 
 ---
 
-# BLOCO 1 — Abertura
+> Os Blocos 1 a 6 já estão gravados. Ficam aqui como referência para a edição e para conferir continuidade. **Pule direto para o Bloco 7.**
+
+---
+
+# BLOCO 1 — Abertura ✅ gravado
 **Narração: Leandro** · **Tempo: 00:00 – 00:40** · **Tela: portal em `/login`**
 
 **Ação:** deixar a tela de login parada, sem clicar em nada.
@@ -47,7 +78,7 @@ A gravação de tela é feita integralmente por **Leandro Guarido de Oliveira (R
 
 ---
 
-# BLOCO 2 — O problema e a proposta
+# BLOCO 2 — O problema e a proposta ✅ gravado
 **Narração: Leandro** · **Tempo: 00:40 – 02:00** · **Tela: portal em `/login`**
 
 **Ação:** continuar na tela de login. Por volta dos 90 segundos, fazer login como **`veterinario@clyvo.com` / `admin123`** e deixar o dashboard aberto enquanto termina a fala.
@@ -62,7 +93,7 @@ A gravação de tela é feita integralmente por **Leandro Guarido de Oliveira (R
 
 ---
 
-# BLOCO 3 — O código na IDE
+# BLOCO 3 — O código na IDE ✅ gravado
 **Narração: Leandro** · **Tempo: 02:00 – 04:30** · **Tela: IDE**
 
 Este é o bloco que sustenta os 20 pontos de Narrativa da Solução. A ideia é mostrar **pouco código, mas o código certo**, sempre explicando a decisão de projeto por trás dele. Não leia o código linha por linha: aponte o trecho e explique por que ele existe.
@@ -151,7 +182,7 @@ Este é o bloco que sustenta os 20 pontos de Narrativa da Solução. A ideia é 
 
 ---
 
-# BLOCO 4 — Perfil do tutor e controle de acesso
+# BLOCO 4 — Perfil do tutor e controle de acesso ✅ gravado
 **Narração: GABRIEL (RM 562325)** · **Tempo: 04:30 – 06:00**
 
 **Ações que o Leandro grava enquanto a fala do Gabriel roda por cima:**
@@ -174,7 +205,7 @@ Este é o bloco que sustenta os 20 pontos de Narrativa da Solução. A ideia é 
 
 ---
 
-# BLOCO 5 — As regras de negócio rodando
+# BLOCO 5 — As regras de negócio rodando ✅ gravado
 **Narração: Leandro** · **Tempo: 06:00 – 07:50** · **Tela: `/agendamentos/novo`, ainda como tutor**
 
 Aqui a gente fecha o ciclo: as validações que apareceram no código do Bloco 3 agora são provocadas de propósito na interface. Deixe cada mensagem visível na tela por uns 3 segundos.
@@ -206,7 +237,7 @@ Aqui a gente fecha o ciclo: as validações que apareceram no código do Bloco 3
 
 ---
 
-# BLOCO 6 — O contrato da API e o CRUD completo
+# BLOCO 6 — O contrato da API e o CRUD completo ✅ gravado
 **Narração: Leandro** · **Tempo: 07:50 – 09:30** · **Tela: aba do Swagger**
 
 > ⚠️ **Regra absoluta deste bloco: nunca use DELETE no Thor (id 1), na Luna (id 2) nem no Pipoca (id 3).**
@@ -278,6 +309,17 @@ No passo 4, copiar o `id` devolvido no passo 3 e trocar apenas o `peso` para `12
 
 ---
 
+# ⬜ RETOME A GRAVAÇÃO AQUI
+
+**Antes de voltar a gravar:**
+
+1. Abrir https://clyvo-vet.onrender.com/login e esperar carregar — o Render free hiberna e a primeira requisição leva ~50 s.
+2. **Fazer login de novo, com sessão fresca.** Se você deixou o navegador aberto desde a gravação anterior, a sessão pode ter expirado no meio do container reiniciar.
+3. Conferir que o agendamento do **Thor** criado no Bloco 5 ainda está na fila. **Se o Render tiver hibernado, o banco em memória foi zerado e esse agendamento sumiu** — nesse caso, refaça rapidamente o agendamento válido do Bloco 5 (Thor, Dra. Camila, dia útil às 14:00, jejum marcado) sem gravar, só para recriar o estado. O Flyway e o `DataLoader` recriam os três animais e os três logins sozinhos, mas não o agendamento que você criou na gravação.
+4. Manter o mesmo enquadramento, zoom e tema do navegador usados antes, para a edição não ficar com salto visual.
+
+---
+
 # BLOCO 7 — Fluxo clínico do veterinário
 **Narração: KAIKY (RM 564578)** · **Tempo: 09:30 – 11:10**
 
@@ -305,8 +347,35 @@ No passo 4, copiar o `id` devolvido no passo 3 e trocar apenas o `peso` para `12
 
 ---
 
+# BLOCO 7B — Supervisão administrativa
+**Narração: Leandro** · **Tempo: 11:10 – 11:55** · **Tela: portal, trocando para o perfil ADMIN**
+
+Bloco novo, criado depois que o acesso de supervisão do ADMIN foi implementado. Fecha a demonstração do controle de acesso mostrando os **três** perfis, não só dois.
+
+**Ações, nesta ordem:**
+1. Sair do perfil da veterinária.
+2. Entrar como **`admin@clyvo.com` / `admin123`**.
+3. Apontar o badge **ADMIN** no canto superior direito.
+4. Mostrar o menu: ele tem **Fila Clínica**, igual ao do veterinário — diferente do menu do tutor, que não tinha.
+5. Abrir a **Fila Clínica** (`/atendimentos`) e mostrar que o atendimento do Thor concluído no Bloco 7 já aparece com status **CONCLUÍDO**.
+6. Abrir **Pets & Prontuários** e mostrar que o admin enxerga **os três animais** — Thor, Luna e Pipoca — enquanto o tutor via apenas os dois dele.
+
+**Fala:**
+
+> "Para fechar o controle de acesso, falta o terceiro perfil. Este é o administrador, um papel de supervisão.
+>
+> Repare no menu: ele tem a Fila Clínica, como o veterinário. O do tutor não tinha — e isso não é a interface escondendo um botão por estética, é o menu refletindo exatamente o que o Spring Security autoriza para cada papel. Nenhum perfil vê aqui uma opção que vá recusar o acesso depois.
+>
+> Na fila clínica, o atendimento do Thor que acabamos de concluir já aparece como concluído. O administrador acompanha a operação inteira da clínica em tempo real.
+>
+> E a diferença mais clara está nos prontuários: o administrador enxerga os três animais cadastrados. O tutor, no bloco anterior, via apenas os dois que são dele. É o mesmo sistema, a mesma tela, com o escopo de dados recortado por perfil no servidor.
+>
+> São três papéis, três níveis de acesso, todos definidos de forma declarativa na configuração de segurança."
+
+---
+
 # BLOCO 8 — Integração com as outras disciplinas
-**Narração: Leandro** · **Tempo: 11:10 – 12:30** · **Tela: celular com o app + prontuário no navegador**
+**Narração: Leandro** · **Tempo: 11:55 – 13:15** · **Tela: celular com o app + prontuário no navegador**
 
 **Ações:**
 1. Com o prontuário ainda aberto no navegador, trazer a tela do celular para o vídeo.
@@ -326,7 +395,7 @@ No passo 4, copiar o `id` devolvido no passo 3 e trocar apenas o `peso` para `12
 ---
 
 # BLOCO 9 — Encerramento
-**Narração: Leandro** · **Tempo: 12:30 – 13:00** · **Tela: dashboard do portal**
+**Narração: Leandro** · **Tempo: 13:15 – 13:45** · **Tela: dashboard do portal**
 
 **Ação:** voltar ao dashboard e deixar a tela parada.
 
@@ -340,7 +409,9 @@ No passo 4, copiar o `id` devolvido no passo 3 e trocar apenas o `peso` para `12
 
 ## Checklist pós-gravação
 
-- [ ] Áudios do Gabriel e do Kaiky recebidos e sincronizados sobre os Blocos 4 e 7.
+- [ ] Áudio do Kaiky recebido e sincronizado sobre o Bloco 7 (o do Gabriel, no Bloco 4, já está gravado).
+- [ ] A emenda entre o Bloco 6 (gravado antes) e o Bloco 7 não tem salto de enquadramento, zoom ou tema.
+- [ ] No Bloco 7B, os três perfis ficaram evidentes: tutor restrito, veterinário clínico e administrador supervisor.
 - [ ] Os três integrantes aparecem nominalmente no Bloco 1, com RM.
 - [ ] No Bloco 3, o código ficou legível em tela cheia e a suíte de testes apareceu verde.
 - [ ] As três mensagens de erro da triagem ficaram legíveis na tela no Bloco 5.
