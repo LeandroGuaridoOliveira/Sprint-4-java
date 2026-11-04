@@ -10,6 +10,7 @@ import br.com.fiap.clyvovet.repository.PetRepository;
 import br.com.fiap.clyvovet.repository.VeterinarioRepository;
 import br.com.fiap.clyvovet.service.TriagemAgendamentoService;
 import jakarta.validation.Valid;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -108,6 +109,7 @@ public class AgendamentoWebController {
     }
 
     @PostMapping("/{id}/cancelar")
+    @CacheEvict(value = "agendamentos", allEntries = true)
     public String cancelarAgendamento(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         agendamentoRepository.findById(id).ifPresent(a -> {
             a.setStatus("CANCELADO");

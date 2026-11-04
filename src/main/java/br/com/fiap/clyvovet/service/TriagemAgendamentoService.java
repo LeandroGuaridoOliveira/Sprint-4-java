@@ -9,6 +9,7 @@ import br.com.fiap.clyvovet.exception.ResourceNotFoundException;
 import br.com.fiap.clyvovet.repository.AgendamentoRepository;
 import br.com.fiap.clyvovet.repository.PetRepository;
 import br.com.fiap.clyvovet.repository.VeterinarioRepository;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +40,7 @@ public class TriagemAgendamentoService {
      * Implementa validações de horário de funcionamento e prevenção de sobreposição na agenda médica.
      */
     @Transactional
+    @CacheEvict(value = "agendamentos", allEntries = true)
     public Agendamento processarTriagemEAgendamento(SolicitacaoAgendamentoDTO dto) {
         // 1. Validação de entidades existentes
         Pet pet = petRepository.findById(dto.getPetId())
