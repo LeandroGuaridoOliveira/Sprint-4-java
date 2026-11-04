@@ -11,6 +11,8 @@ import br.com.fiap.clyvovet.repository.AgendamentoRepository;
 import br.com.fiap.clyvovet.repository.EventoSaudeRepository;
 import br.com.fiap.clyvovet.repository.PetRepository;
 import br.com.fiap.clyvovet.repository.VeterinarioRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +51,12 @@ public class ExecucaoConsultaService {
      * 4. Encerramento do Agendamento para status CONCLUIDO
      */
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "pets", allEntries = true),
+            @CacheEvict(value = "agendamentos", allEntries = true),
+            @CacheEvict(value = "eventos", allEntries = true),
+            @CacheEvict(value = "eventos-saude", allEntries = true)
+    })
     public EventoSaude executarAtendimentoClinico(AtendimentoConsultaDTO dto) {
         // 1. Localiza e valida o Agendamento
         Agendamento agendamento = agendamentoRepository.findById(dto.getAgendamentoId())
