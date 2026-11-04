@@ -100,4 +100,44 @@ class ControleDeAcessoIntegrationTest {
                 .andExpect(status().isMethodNotAllowed())
                 .andExpect(jsonPath("$.status").value(405));
     }
+
+    @Test
+    @DisplayName("Admin acessa o formulário de triagem e agendamento")
+    @WithMockUser(username = "admin@clyvo.com", roles = "ADMIN")
+    void adminDeveAcessarNovoAgendamento() throws Exception {
+        mockMvc.perform(get("/agendamentos/novo"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Admin acessa a fila de atendimento clínico em modo supervisão")
+    @WithMockUser(username = "admin@clyvo.com", roles = "ADMIN")
+    void adminDeveAcessarFilaClinica() throws Exception {
+        mockMvc.perform(get("/atendimentos"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Admin acessa o painel principal com visão clínica de supervisão")
+    @WithMockUser(username = "admin@clyvo.com", roles = "ADMIN")
+    void adminDeveAcessarDashboard() throws Exception {
+        mockMvc.perform(get("/dashboard"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Admin acessa a lista de pets monitorados")
+    @WithMockUser(username = "admin@clyvo.com", roles = "ADMIN")
+    void adminDeveAcessarPets() throws Exception {
+        mockMvc.perform(get("/pets"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Tutor acessa o formulário de triagem e agendamento")
+    @WithMockUser(username = "tutor@clyvo.com", roles = "TUTOR")
+    void tutorDeveAcessarNovoAgendamento() throws Exception {
+        mockMvc.perform(get("/agendamentos/novo"))
+                .andExpect(status().isOk());
+    }
 }
