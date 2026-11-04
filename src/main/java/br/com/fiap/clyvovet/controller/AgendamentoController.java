@@ -5,6 +5,7 @@ import br.com.fiap.clyvovet.service.AgendamentoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -30,7 +31,7 @@ public class AgendamentoController {
             @RequestParam(required = false) String tipo,
             @RequestParam(required = false) Long petId,
             @RequestParam(required = false) Long veterinarioId,
-            @PageableDefault(size = 10, sort = "dataAgendamento") Pageable pageable) {
+            @ParameterObject @PageableDefault(size = 10, sort = "dataAgendamento") Pageable pageable) {
         return ResponseEntity.ok(service.listar(status, tipo, petId, veterinarioId, pageable));
     }
 

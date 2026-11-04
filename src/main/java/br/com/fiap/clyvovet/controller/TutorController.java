@@ -5,6 +5,7 @@ import br.com.fiap.clyvovet.service.TutorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -27,7 +28,7 @@ public class TutorController {
     @Operation(summary = "Listar tutores", description = "Busca por nome com paginação e ordenação")
     public ResponseEntity<Page<TutorDTO>> listar(
             @RequestParam(required = false) String nome,
-            @PageableDefault(size = 10, sort = "nome") Pageable pageable) {
+            @ParameterObject @PageableDefault(size = 10, sort = "nome") Pageable pageable) {
         return ResponseEntity.ok(service.listar(nome, pageable));
     }
 
