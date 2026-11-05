@@ -9,6 +9,7 @@ Plataforma web (Spring MVC + Thymeleaf) e API RESTful voltada à gestão contín
 | **Portal Web** | https://clyvo-vet.onrender.com |
 | **Swagger UI** | https://clyvo-vet.onrender.com/swagger-ui.html |
 | **OpenAPI JSON** | https://clyvo-vet.onrender.com/api-docs |
+| **Vídeo de Apresentação (YouTube)** | https://youtu.be/xnLhJ50jFN0 |
 
 > O serviço roda no plano gratuito do Render, que hiberna após período de inatividade. A primeira requisição pode levar cerca de 50 segundos até o contêiner subir; as seguintes respondem normalmente.
 
@@ -208,6 +209,7 @@ docker run -p 8080:8080 -e SPRING_PROFILES_ACTIVE=prod clyvo-vet
 
 A aplicação está publicada e acessível em **https://clyvo-vet.onrender.com**, a partir do manifesto [`render.yaml`](render.yaml) e do [`Dockerfile`](Dockerfile) multi-stage (ambiente Docker, perfil `SPRING_PROFILES_ACTIVE=prod`, porta dinâmica `${PORT:8080}`, branch `develop`).
 
+- **Vídeo de Apresentação e Demonstração Técnica (YouTube):** https://youtu.be/xnLhJ50jFN0
 - **Aplicação em nuvem:** https://clyvo-vet.onrender.com
 - **Repositório GitHub (Java Advanced):** https://github.com/LeandroGuaridoOliveira/Sprint-4-java
 - **Coleção Postman:** [`documentos/ClyvoVET-API.postman_collection.json`](documentos/ClyvoVET-API.postman_collection.json)
